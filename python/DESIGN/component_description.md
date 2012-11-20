@@ -6,7 +6,7 @@ the visualizer architecture shall be responsible for.
 
 UI - PRELIMINARY
 ----------------
-The UI contains Widgets which are objects just like in the Timeline. Widgets
+The UI contains [Widgets](widgets.md) which are objects just like in the Timeline. Widgets
 contain a set of procedures expected in the UI.  The UI should draw all the
 objects it contains, and send appropriate inputs to the objects.  Individual
 objects should contain the logic to handle clicks, hovers, drags (not the
@@ -53,10 +53,10 @@ component.  In the initial implementation, this shall be the UI, then the
 Timeline, if no UI Widget has responded appropriately.
 
 Inputs that should be sent are:
-* Downbutton (For Drags)
-* Upbutton (left, right, and middle)
-* Selections (If no downbutton was responded too)
-* Keypresses
+* Down-button (For Drags)
+* Up-button (left, right, and middle)
+* Selections (If no down-button was responded too)
+* Key presses
 * Voice Commands :|
 
 Controller - PRELIMINARY

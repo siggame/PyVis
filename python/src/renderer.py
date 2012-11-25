@@ -7,6 +7,36 @@ from pyglet import clock
 __all__ = []
 
 
+class Primitive(object):
+    def draw(self):
+        for i, j in zip(self.vertex_lists, self.modes):
+            pass
+            # self.renderer.frame.add(4, j, None, *i)
+
+
+class Rectangle(Primitive):
+    def __init__(self, renderer, x, y, width, height, group):
+        self.renderer = renderer
+        data = [('v2f', (x, y, x + width, y,
+                 x + width, y + height,
+                 x, y + height)),
+            ('c4f',
+                (renderer.fg_color) * 4)]
+
+        if renderer.texture:
+            data += [
+                ('t2f',
+                    (0, 0,
+                     1, 0,
+                     1, 1,
+                     0, 1))]
+            group = graphics.TextureGroup(renderer.texture, parent=group)
+
+        self.vertex_lists = [data]
+
+        self.modes = [gl.GL_QUADS]
+
+
 class Renderer(object):
     '''
     '''
@@ -20,6 +50,7 @@ class Renderer(object):
         '''
         self.app = application
         self.fps_display = clock.ClockDisplay()
+        self.init_frame()
 
     def init_frame(self):
         self.frame = graphics.Batch()
@@ -32,22 +63,5 @@ class Renderer(object):
         '''
         '''
 
-        data = [
-            ('v2f',
-                (x, y,
-                 x + width, y,
-                 x + width, y + height,
-                 x, y + height)),
-            ('c4f',
-                (self.fg_color) * 4)]
+        return Rectangle(self, x, y, width, height, group)
 
-        if self.texture:
-            data += [
-                ('t2f',
-                    (0, 0,
-                     1, 0,
-                     1, 1,
-                     0, 1))]
-            group = graphics.TextureGroup(self.texture, parent=group)
-
-        self.frame.add(4, gl.GL_QUADS, group, *data)

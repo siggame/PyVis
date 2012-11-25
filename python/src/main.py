@@ -8,18 +8,25 @@ __all__ = []
 class Test:
     def __init__(self, renderer):
         self.renderer = renderer
-
-    def update(self):
+        self.batches = []
         for x in range(40):
             for y in range(30):
+                y += 20
                 if (x + y) % 3 == 0:
                     self.renderer.fg_color = (1, 0, 0, 1)
                 elif (x + y) % 3 == 1:
                     self.renderer.fg_color = (0, 1, 0, 1)
                 else:
                     self.renderer.fg_color = (0, 0, 1, 1)
-                self.renderer.drawRect(x * 10, y * 10, 10, 10)
+                self.batches += [self.renderer.build_rect(x * 10, y * 10, 10, 10)]
 
+    def update(self):
+        '''
+        for b in self.batches:
+            b.draw()
+        '''
+        for b in self.batches:
+            b.draw()
 
 def main():
     app = Application()

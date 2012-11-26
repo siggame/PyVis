@@ -1,0 +1,3 @@
+[submodule "python/docs/_site"]
+	path = python/docs/_site
+	url = git@github.com:siggame/visualizer.git

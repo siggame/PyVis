@@ -25,7 +25,7 @@ software renderer developers, and the like must follow in their drivers to say
 that they run a certain version of OpenGL.
 
 The only open implementation of OpenGL that I know of is
-[Mesa3D](www.mesa3d.org).  It's a software renderer used primarily by
+[Mesa3D](http://www.mesa3d.org).  It's a software renderer used primarily by
 GNU/Linux.
 
 

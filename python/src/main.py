@@ -5,6 +5,18 @@ from renderer import Renderer
 __all__ = []
 
 
+class GameObject(object):
+    pass
+
+
+class TimelineObject(object):
+    pass
+
+
+class Ship(GameObject, TimelineObject):
+    pass
+
+
 class Test:
     def __init__(self, renderer):
         self.renderer = renderer
@@ -25,8 +37,7 @@ class Test:
         for b in self.batches:
             b.draw()
         '''
-        for b in self.batches:
-            b.draw()
+
 
 def main():
     app = Application()

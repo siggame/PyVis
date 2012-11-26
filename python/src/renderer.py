@@ -1,13 +1,14 @@
+'''
+The renderer
+'''
 from pyglet import graphics
 from pyglet import gl
 from pyglet import clock
-'''
-'''
-# Prohibit from renderer import *
-__all__ = []
 
 
 class Primitive(object):
+    vertex_lists = {}
+
     def draw(self):
         for i, j in zip(self.vertex_lists, self.modes):
             pass
@@ -15,26 +16,32 @@ class Primitive(object):
 
 
 class Rectangle(Primitive):
-    def __init__(self, renderer, x, y, width, height, group):
-        self.renderer = renderer
+    def __init__(self, renderer, x, y, width, height, texture=None,
+            group=None, color=None):
+        self.x = self._x = x
+        self.y = self._y = y
+        self.width = self._width = width
+        self.height = self._height = height
+
+        if not color:
+            color = renderer.fg_color
+
         data = [('v2f', (x, y, x + width, y,
                  x + width, y + height,
                  x, y + height)),
             ('c4f',
-                (renderer.fg_color) * 4)]
+                (color) * 4)]
 
-        if renderer.texture:
+        if texture:
             data += [
                 ('t2f',
                     (0, 0,
                      1, 0,
                      1, 1,
                      0, 1))]
-            group = graphics.TextureGroup(renderer.texture, parent=group)
+            group = graphics.TextureGroup(texture, parent=group)
 
-        self.vertex_lists = [data]
-
-        self.modes = [gl.GL_QUADS]
+        self.vertex_lists['rect'] = renderer.frame.add(4, gl.GL_QUADS, group, *data)
 
 
 class Renderer(object):
@@ -51,9 +58,10 @@ class Renderer(object):
         self.app = application
         self.fps_display = clock.ClockDisplay()
         self.init_frame()
+        self.frame = graphics.Batch()
 
     def init_frame(self):
-        self.frame = graphics.Batch()
+        pass
 
     def draw_frame(self):
         self.frame.draw()

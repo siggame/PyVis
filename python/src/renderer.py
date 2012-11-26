@@ -1,5 +1,7 @@
 '''
-The renderer
+The renderer is responsible for building the primitives, and complex objects
+to be drawn by pyglet.  This module also contains various base classes for
+primitives which can be modified on the fly.  
 '''
 from pyglet import graphics
 from pyglet import gl
@@ -41,7 +43,8 @@ class Rectangle(Primitive):
                      0, 1))]
             group = graphics.TextureGroup(texture, parent=group)
 
-        self.vertex_lists['rect'] = renderer.frame.add(4, gl.GL_QUADS, group, *data)
+        self.vertex_lists['rect'] = renderer.frame.add(4, gl.GL_POLYGONS, group,
+                *data)
 
 
 class Renderer(object):
@@ -59,6 +62,7 @@ class Renderer(object):
         self.fps_display = clock.ClockDisplay()
         self.init_frame()
         self.frame = graphics.Batch()
+
 
     def init_frame(self):
         pass

@@ -42,8 +42,10 @@ class Rectangle(Primitive):
                      0, 1))]
             group = graphics.TextureGroup(texture, parent=group)
 
+        # TODO: Change this to gl.GL_TRIANGLE_FAN when pyglet has fixed its
+        # allocator issues around TRIANGLE_FANs and LINE_LOOPs
         self.vertex_lists['rect'] = self.renderer.frame.add(4, 
-                gl.GL_TRIANGLE_FAN, group, *data)
+                gl.GL_QUADS, group, *data)
 
 
 class Renderer(object):

@@ -12,6 +12,7 @@ Contents:
     :maxdepth: 2
     :numbered:
 
+    application.rst
     renderer.rst
 
 

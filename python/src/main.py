@@ -30,7 +30,7 @@ class Test:
                     self.renderer.fg_color = (0, 1, 0, 1)
                 else:
                     self.renderer.fg_color = (0, 0, 1, 1)
-                self.batches += [self.renderer.Rectangle(x * 10, y * 10, 10, 10)]
+                self.batches += [Rectangle(self.renderer, x * 10, y * 10, 10, 10)]
 
     def update(self):
         '''
@@ -42,9 +42,9 @@ class Test:
 def main():
     app = Application()
     renderer = Renderer(app)
-    app.request_update_on_draw(renderer.init_frame)
-    #app.request_update_on_draw(Test(renderer).update)
-    app.request_update_on_draw(renderer.draw_frame)
+    app.request_update_on_draw(renderer.draw_frame, 100)
+    app.request_update_on_draw(renderer.init_frame, 0)
+    app.request_update_on_draw(Test(renderer).update)
 
     r = Rectangle(renderer, 1, 2, 20, 30)
     r = Rectangle(renderer, 40, 40, 20, 30)

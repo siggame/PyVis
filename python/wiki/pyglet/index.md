@@ -1,7 +1,12 @@
+Other Pages
+-----------
+
+ * [The Pyglet Drawing Hierarchy](pyglet-drawing.md)
+
 Pyglet, A Perhaps Useful Guide
 ==============================
 
-Pyglet is a pure-python library that accesses your native OpenGL calls on your
+Pyglet is a pure-python library that accesses the native OpenGL calls on your
 OS.  It actually does a lot of other cool stuff.  But from a graphics
 perspective, this is important.  Using a tool called gengl.py, it automatically
 generates all the python hooks to access everything you could want to access
@@ -19,7 +24,7 @@ re-adding already existing items.
 The most efficient way to use pyglet is to essentially create diffs between 
 frames.  If nothing has changed for an element, then the diff is nothing. 
 
-A paused game should be hyper fast because the diff should be empty. 
+A paused game should be hyper fast because the diff should be empty.
 
 When making something hidden, it is faster to set its alpha to zero or set all 
 the vertices in the object to (0, 0).

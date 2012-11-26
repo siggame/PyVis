@@ -43,8 +43,8 @@ of the hierarchy as it contains the raw data associated with drawing vertices
 along with texture coordinates, fog coords, colors, etc. Everything in a
 VertexDomain must have the same
 [OpenGL Drawing Mode](http://www.opengl.org/sdk/docs/man3/xhtml/glDrawArrays.xml)
-(GL_LINES, GL_POINTS, GL_QUADS, etc.)  This object has zero knowledge of the 
-VertexLists associated with it.
+(GL_LINES, GL_POINTS, GL_TRIANGLES, etc.)  This object has zero knowledge of
+the VertexLists associated with it.
 
 See the [Supplementary OpenGL Section](../opengl/index.md) for more info,
 if you're interested.

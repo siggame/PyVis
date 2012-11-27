@@ -1,6 +1,5 @@
 '''
-The :mod:`application` module contains the Application class which builds the 
-game window and starts calling functions in all the modules.
+The :mod:`application` module contains the Application class which builds the game window and starts calling functions in all the modules.
 '''
 from pyglet.window import Window
 import pyglet
@@ -11,16 +10,16 @@ DEFAULT_HEIGHT = 480
 
 class Application(object):
     '''
-    This class creates a window with an OpenGL context, and contains
-    hooks for components to call to request updates as apart of the
-    'game loop.'
+    This class creates a window with an OpenGL context, and contains hooks for components to call to request updates as apart of the 'game loop.'
 
-    *size* is a tuple representing the default size of the 
-    window (width, height).
+    :param size: is a tuple representing the default size of the window (width, height).
+    :type size: 2-tuple of integers
 
-    *title* is the title text at the top of the window.
+    :param title: is the title text at the top of the window.
+    :type title: str
 
-    *fullscreen* tells the window to start fullscren or not.
+    :param fullscreen: tells the window to start fullscren or not.
+    :type fullscreen: boolean
     '''
     def __init__(self, size=(DEFAULT_WIDTH, DEFAULT_HEIGHT),
             title='MegaMinerAI Bland Title Text', fullscreen=False):
@@ -32,18 +31,15 @@ class Application(object):
 
     def request_update_on_draw(self, procedure, order=50):
         '''
-        This method tells the application that whenever a draw occurs for the
-        application, that *procedure* should be called.  
+        This method tells the application that whenever a draw occurs for the application, that *procedure* should be called.  
 
-        *order* specifies when *procedure* should be called.  All procedures
-        with the same *order* will execute in a semi-random fashion after the 
-        previous *order* and before the next *order* value in the update
-        queue.  In general, all procedures should be called sometime before the 
-        :mod:`renderer`'s update() function is called.  Procedures will be
-        called with *order* from least to greatest.
+        :param order: specifies when *procedure* should be called.  All procedures with the same *order* will execute in a semi-random fashion after the previous *order* and before the next *order* value in the update queue.  In general, all procedures should be called sometime before the :mod:`renderer`'s update() function is called.  Procedures will be called with *order* from least to greatest.
+        :type order: float or integer
 
-        *procedure* should not expect any arguments or an exception will be
-        thrown.
+        :param procedure: should not expect any arguments or an exception will be thrown.
+        :type procedure: function or class method
+
+        Example gameloop::
 
             >>> app.request_update_on_draw(game.update_objects)
             >>> app.request_update_on_draw(game.do_input_stuff, 10)
@@ -75,9 +71,7 @@ class Application(object):
 
     def run(self):
         '''
-        This method starts the 'game loop.'  It is a blocking function so at
-        this, point all modules should have requested updates from the
-        application or another thread should have been started.
+        This method starts the 'game loop.'  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.
         '''
         pyglet.clock.schedule(self._update)
         pyglet.app.run()

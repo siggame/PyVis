@@ -18,7 +18,7 @@ The coding standard used for this project should follow the guidelines set forth
 Common Issues
 -------------
 
-When there are mistakes commonly seen in code-reviews, then an official response should be written :doc:`on this page </process/common-issues>` for consistency and quick reference by code-reviewers.
+When there are mistakes commonly seen in code-reviews, then an official response should be written :doc:`on this page </process/common-guidelines>` for consistency and quick reference by code-reviewers.
 
 The Zen Of Python
 -----------------

@@ -1,7 +1,12 @@
-
-# Prohibi from input import *
+'''
+input
+'''
+import pyglet
 
 class Input(object):
+    '''
+    input
+    '''
     def __init__(self, application):
         self.app = application
 
@@ -25,7 +30,7 @@ class Input(object):
             self.on_mouse_move(x, y, dx, dy)
 
         @win.event
-        def on_mouse_enter(x, y)
+        def on_mouse_enter(x, y):
             self.on_mouse_enter(x, y)
 
         @win.event
@@ -46,6 +51,9 @@ class Input(object):
 
 
     def on_key_press(self, symbol, modifiers):
+        '''
+        docstring
+        '''
         pass
 
     def on_key_release(self, symbol, modifiers):

@@ -38,6 +38,7 @@ Docstrings
 
 Proper docstrings are required on all public methods (i.e. methods that do not start with a single underscore), and are suggested for usage with all private methods.  These docstrings generate the documentation used by sphinx and are easy-to-read when just reading code.  If someone ever has to look at the source to determine how to use a certain module, then the docstring is not clear enough. 
 
+
 .. todo:: Write Example Docstrings Here
 
 

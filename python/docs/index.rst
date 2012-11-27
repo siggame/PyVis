@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Visualizer's documentation!
-======================================
+PyVis Documentation
+===================
 
 This is not yet organized how it should be.
 
@@ -14,8 +14,9 @@ Code Stuff:
     :maxdepth: 2
     :numbered:
 
-    application.rst
-    renderer.rst
+    code/application.rst
+    code/renderer.rst
+    code/input.rst
 
 Design Stuff:
 
@@ -34,7 +35,7 @@ Supplementary Information:
 
     process/index.rst
     process/review-guidelines.rst
-    process/common-issues.rst
+    process/common-guidelines.rst
     pyglet/index.rst
     opengl/index.rst
 

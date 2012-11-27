@@ -1,7 +1,5 @@
 '''
-The renderer is responsible for building the primitives, and complex objects
-to be drawn by pyglet.  This module also contains various base classes for
-primitives which can be modified on the fly.  
+The renderer is responsible for building the primitives, and complex objects to be drawn by pyglet.  This module also contains various base classes for primitives which can be modified on the fly.  
 '''
 from pyglet import graphics
 from pyglet import gl
@@ -11,9 +9,12 @@ from copy import copy
 
 class Primitive(object):
     '''
-    This is the base class for any primitive to draw to the screen. 
-    To be used most effectively, all library-provided primitives should
-    be declared within :class:`renderer.Renderer`.
+    This is the base class for any primitive to draw to the screen. To be used most effectively, all library-provided primitives should be declared within :class:`renderer.Renderer`.
+
+    :param renderer: renderer instance to add this primitive to.
+    :type renderer: :class:`renderer.Renderer`
+
+    :raises: AttributeError if renderer is not passed to constructor and not instantiated from an instance of a renderer
     '''
     vertex_lists = {}
     def __init__(self, renderer=None):
@@ -31,9 +32,7 @@ class Primitive(object):
 
 class Renderer(object):
     '''
-    This class allows access to the primitives (the basic drawing building 
-    blocks) to draw just about anything.  Widgets should use these to 
-    draw themselves::
+    This class allows access to the primitives (the basic drawing building blocks) to draw just about anything.  Widgets should use these to draw themselves::
 
         class Button(RectWidget):
             def __init__(self, renderer, x, y, width, height, text):
@@ -43,8 +42,7 @@ class Renderer(object):
                 # etc. 
                 # etc.
 
-    primitives should be called through the Renderer instance instead of 
-    through the class (i.e.)::
+    primitives should be called through the Renderer instance instead of through the class (i.e.)::
         
         renderer = Renderer()
         renderer.Rectangle()
@@ -54,8 +52,7 @@ class Renderer(object):
         renderer = Renderer()
         Renderer.Rectangle(renderer=renderer)
 
-    There is special python magic to make that work.  See `__init__()`
-    for that.
+    There is special python magic to make that work.  See `__init__()` for that.
     '''
 
     fg_color = (1, 0, 0, 1)
@@ -95,6 +92,10 @@ class Renderer(object):
 
             app.request_update_on_draw(renderer.init_frame, 0)
             app.request_update_on_draw(renderer.draw_frame, 100)
+        
+        :param app: application to register with
+        :type app: :class:`application.Application`
+        :rtype: None
             
         '''
         app.request_update_on_draw(self.init_frame, 0)
@@ -105,16 +106,18 @@ class Renderer(object):
         '''
         This method should be called at the beginning of every game loop.  
         It does the pre-loop set up, if any.
+
+        :rtype: None
         '''
         pass
 
     def draw_frame(self):
         '''
-        This method should be called at (or near) the end of every game loop
-        after all the objects have been updated and are ready to draw to 
-        the screen.
+        This method should be called at (or near) the end of every game loop after all the objects have been updated and are ready to draw to the screen.
 
         This will draw the batch associated with the renderer.
+
+        :rtype: None
         '''
         self.frame.draw()
         self.fps_display.draw()
@@ -124,29 +127,29 @@ class Renderer(object):
         '''
         This class creates a rectangle primitive.  
 
-        *x* is the x offset (from the left side of the screen) to draw the
-        rectangle.
+        :param x: the x offset (from the left side of the screen) to draw the rectangle.
+        :type x: float
 
-        *y* is the y offset (from the bottom of the screen) to draw the 
-        rectangle.
+        :param y: is the y offset (from the bottom of the screen) to draw the rectangle.
+        :type y: float
 
-        *width* is the width of the rectangle
+        :param width: is the width of the rectangle
+        :type width: float
 
-        *height* is the height of the rectangle
+        :param height: is the height of the rectangle
+        :type height: float
 
-        !NOT IMPLEMENTED!
-        *texture* is the texture to paint the rectangle with 
+        :param texture: is the texture to paint the rectangle with 
+        :type texture: 
 
-        *group* is the group, if any, that the rectangle should
-        be associated with.  Using texture will automatically make
-        this a part of the appropriate TextureGroup and make *group*
-        its parent.
+        :param group: is the group, if any, that the rectangle should be associated with.  Using texture will automatically make this a part of the appropriate TextureGroup and make *group* its parent.
+        :type group: Group
 
-        *color* is the color to paint the rectangle.  If not specified,
-        the renderer's default `fg_color` will be used instead.
+        :param color: is the color to paint the rectangle.  If not specified, the renderer's default `fg_color` will be used instead.
+        :type color: 3-tuple or 4-tuple of floats from 0 to 1 
 
-        *filled* specified whether to draw this as a filled-in rectangle
-        or rectangle outline.
+        :param filled: specified whether to draw this as a filled-in rectangle or rectangle outline.
+        :type filled: boolean
         '''
         def __init__(self, x, y, width, height, texture=None,
                 group=None, color=None, filled=True, **kwargs):

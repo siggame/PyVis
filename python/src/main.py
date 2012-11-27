@@ -41,8 +41,8 @@ class Test:
 
 def main():
     app = Application()
-    renderer = Renderer(app)
-    app.register_with_app(app)
+    renderer = Renderer()
+    renderer.register_with_app(app)
     app.request_update_on_draw(Test(renderer).update)
 
     r = Renderer.Rectangle(1, 2, 20, 30, renderer=renderer)

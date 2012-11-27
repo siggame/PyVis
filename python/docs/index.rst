@@ -6,7 +6,9 @@
 Welcome to Visualizer's documentation!
 ======================================
 
-Contents:
+This is not yet organized how it should be.
+
+Code Stuff:
 
 .. toctree::
     :maxdepth: 2
@@ -14,6 +16,25 @@ Contents:
 
     application.rst
     renderer.rst
+
+Design Stuff:
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    design/component_description.rst
+    design/widgets.rst
+
+Supplementary Information:
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    code-review/review-guidelines.rst
+    pyglet/index.rst
+    opengl/index.rst
 
 
 

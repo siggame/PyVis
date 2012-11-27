@@ -8,7 +8,17 @@ PyVis Documentation
 
 This is not yet organized how it should be.
 
-Code Stuff:
+Plugin Stuff
+------------
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+
+    plugins/visualizer-mantra.rst
+
+Core Stuff
+----------
 
 .. toctree::
     :maxdepth: 2
@@ -18,7 +28,8 @@ Code Stuff:
     code/renderer.rst
     code/input.rst
 
-Design Stuff:
+Design Stuff
+------------
 
 .. toctree::
     :maxdepth: 2
@@ -27,10 +38,12 @@ Design Stuff:
     design/component_description.rst
     design/widgets.rst
 
-Supplementary Information:
+
+Supplementary Information
+-------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :numbered:
 
     process/index.rst
@@ -38,8 +51,6 @@ Supplementary Information:
     process/common-guidelines.rst
     pyglet/index.rst
     opengl/index.rst
-
-
 
 Indices and tables
 ==================

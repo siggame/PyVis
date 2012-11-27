@@ -12,8 +12,7 @@ Plugin Stuff
 ------------
 
 .. toctree::
-    :maxdepth: 1
-    :numbered:
+    :titlesonly:
 
     plugins/visualizer-mantra.rst
 
@@ -32,8 +31,7 @@ Design Stuff
 ------------
 
 .. toctree::
-    :maxdepth: 2
-    :numbered:
+    :titlesonly:
 
     design/component_description.rst
     design/widgets.rst
@@ -43,8 +41,7 @@ Supplementary Information
 -------------------------
 
 .. toctree::
-    :maxdepth: 1
-    :numbered:
+    :titlesonly:
 
     process/index.rst
     process/review-guidelines.rst

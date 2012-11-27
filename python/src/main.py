@@ -1,5 +1,5 @@
 from application import Application
-from renderer import Renderer, Rectangle
+from renderer import Renderer
 
 # Prohibit from main import *
 __all__ = []
@@ -30,7 +30,7 @@ class Test:
                     self.renderer.fg_color = (0, 1, 0, 1)
                 else:
                     self.renderer.fg_color = (0, 0, 1, 1)
-                self.batches += [Rectangle(self.renderer, x * 10, y * 10, 10, 10)]
+                self.batches += [renderer.Rectangle(x * 10, y * 10, 10, 10)]
 
     def update(self):
         '''
@@ -42,12 +42,14 @@ class Test:
 def main():
     app = Application()
     renderer = Renderer(app)
-    app.request_update_on_draw(renderer.draw_frame, 100)
-    app.request_update_on_draw(renderer.init_frame, 0)
+    app.register_with_app(app)
     app.request_update_on_draw(Test(renderer).update)
 
-    r = Rectangle(renderer, 1, 2, 20, 30)
-    r = Rectangle(renderer, 40, 40, 20, 30)
+    r = Renderer.Rectangle(1, 2, 20, 30, renderer=renderer)
+    try:
+        r = Renderer.Rectangle(40, 40, 20, 30)
+    except:
+        pass
 
     app.run()
 

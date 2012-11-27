@@ -36,13 +36,22 @@ class Application(object):
         application, that *procedure* should be called.  
 
         *order* specifies when *procedure* should be called.  All procedures
-        with the same *order* will not have a guarenteed spot in the update
+        with the same *order* will execute in a semi-random fashion after the 
+        previous *order* and before the next *order* value in the update
         queue.  In general, all procedures should be called sometime before the 
         :mod:`renderer`'s update() function is called.  Procedures will be
         called with *order* from least to greatest.
 
         *procedure* should not expect any arguments or an exception will be
         thrown.
+
+            >>> app.request_update_on_draw(game.update_objects)
+            >>> app.request_update_on_draw(game.do_input_stuff, 10)
+            >>> app.request_update_on_draw(game.render_frame, 100)
+            >>> app.run()
+            'processing user input'
+            'updating game objects'
+            'rendering frame'
         '''
 
         self.updates += [(order, procedure)]

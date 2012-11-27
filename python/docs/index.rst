@@ -32,7 +32,9 @@ Supplementary Information:
     :maxdepth: 2
     :numbered:
 
-    code-review/review-guidelines.rst
+    process/index.rst
+    process/review-guidelines.rst
+    process/common-issues.rst
     pyglet/index.rst
     opengl/index.rst
 

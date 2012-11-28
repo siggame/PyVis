@@ -47,6 +47,7 @@ Supplementary Information
     process/review-guidelines.rst
     process/common-guidelines.rst
     pyglet/index.rst
+    pyglet/pyglet-drawing.rst
     opengl/index.rst
 
 Indices and tables

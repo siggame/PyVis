@@ -5,7 +5,7 @@ Official Resource For Writing Proper Visualizer Code
 Importing Modules
 -----------------
 
-Module imports should all appear at the very top of the file unless there is a good reason not to (e.g. a user selects if he wants OpenGL or DirectX rendering).  
+Module imports should all appear at the very top of the file unless there is a good reason not to (e.g. a user selects if he wants OpenGL or DirectX rendering (!!NOT A SUPPORTED FEATURE!!) ).  
 
 ``from module import *`` is never acceptable.  This can cause name conflicts, and makes it more difficult to determine the origin of objects.  For example::
     
@@ -162,3 +162,30 @@ Commit messages should try to follow this model::
 Taken from http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
 See that post for reasons.
+
+Exceptions
+----------
+
+Raising exceptions should occur in Python 3.x fashion::
+
+    raise CustomException('data')
+
+instead of::
+    
+    raise CustomException, 'data'
+
+This is for stylistic reasons and to become accustomed with the python 3.x format.  Exceptions are classes and should be treated as such.
+
+Print Statements
+----------------
+
+The print function is preferred over the print statement.  Since the future of python is 3.x, we should start to accustom ourselves with the new format for when we make the switch.
+
+To use the print function, this must appear at the top of the source file before any other import::
+
+    from __future__ import print_function
+
+Likewise, any language feature which is available in 2.7, but not required until 3.x should use the 3.x format.
+
+You can see these language features by looking for the back-porting notes in this document: http://docs.pythonsprints.com/python3_porting/py-porting.html
+

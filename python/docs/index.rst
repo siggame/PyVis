@@ -33,6 +33,7 @@ Design Stuff
 .. toctree::
     :titlesonly:
 
+    design/nomenclature.rst
     design/component_description.rst
     design/widgets.rst
 

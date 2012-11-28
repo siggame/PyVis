@@ -6,7 +6,7 @@ This work shall act as a set of guidelines for plugin design decisions.  It shal
 Purpose of the Visualizer
 -------------------------
 
-There are several purposes that could be said that the visualizer holds, but above all the purpose of the visualizer is to convey as much artificial intelligence information in the most accurate, succint way possible.  Only when this goal is met, should other features and fluff be worked on.  
+There are several purposes that could be said that the visualizer holds, but above all the purpose of the visualizer is to convey as much artificial intelligence information in the most accurate, succinct way possible.  Only when this goal is met, should other features and fluff be worked on.  
 
 
 Other purposes of the visualizer include (but are not limited to):
@@ -69,41 +69,25 @@ How To Convey Information
 
 There's a lot of ways we can show information.  You'll have to rely on creativity for a lot of this, but some of the common ways are:
 
- * a texture
+.. glossary::
 
- * a changing bar
+    A texture 
+        For example if there's 4 unit types, you might have 4 textures to differentiate between them easily.  
 
- * plain text
+    A changing bar
+        The most common example of this is health.  If a unit's health is depleting, the bar decreases in size.  But that's not the only way.  If there's only one unit type in the game, and such granularity is not needed for health, you could have 4 textures which depict different states of disrepair for the unit.  With that, you've effectively saved some real-estate on a unit that can be used for something else.  You could also depict a falling timer or perhaps a score ceiling with two racing bars.
 
- * animations
+    Plain text
+        Scores are most easily displayed with this, especially if there is no ceiling which competitors are racing to achieve.  Debugging information, units talking, and anything else that would only be confusing if it was depicted in a graphical format. Never use plain text for something that occurs all over the screen and is important.  Health would appear awful as numbers.
 
- * color
+    Animations
+        Animations should be used for a couple of reasons.  When you're trying to depict the flow of information from one state to another or when you want to draw the competitors eyes to a certain portion of the screen.  If the state of an object is changing and it's not crucial information, it shouldn't be animated.  If you have a game which goes from one game mode to another, then an animation should be used to let the user know that the game mode is changing.  The most obvious and pertinent usage of animation is, of course, objects moving from one position to another.  
 
- * particle systems
+    Color
+        When you're trying to differentiate between objects (like units between teams) color is especially effective.  If you're trying to save screen real estate, you can use color as a depiction of flow from one state to another.  While not a way to accurately determine an object's state, it can give a general feeling of its state.  A bright color could also appear if a competitor's eyes should be drawn somewhere.
 
-A texture 
-"""""""""
-For example if there's 4 unit types, you might have 4 textures to differentiate between them easily.  
-
-A changing bar
-""""""""""""""
-The most common example of this is health.  If a unit's health is depleting, the bar decreases in size.  But that's not the only way.  If there's only one unit type in the game, and such granularity is not needed for health, you could have 4 textures which depict different states of disrepair for the unit.  With that, you've effectively saved some real-estate on a unit that can be used for something else.  You could also depict a falling timer or perhaps a score ceiling with two racing bars.
-
-Plain text
-""""""""""
-Scores are most easily displayed with this, especially if there is no ceiling which competitors are racing to achieve.  Debugging information, units talking, and anything else that would only be confusing if it was depicted in a graphical format. Never use plain text for something that occurs all over the screen and is important.  Health would appear awful as numbers.
-
-Animations
-""""""""""
-Animations should be used for a couple of reasons.  When you're trying to depict the flow of information from one state to another or when you want to draw the competitors eyes to a certain portion of the screen.  If the state of an object is changing and it's not cruicial information, it shouldn't be animated.  If you have a game which goes from one game mode to another, then an animation should be used to let the user know that the game mode is changing.  The most obvious and pertinant usage of animation is, of course, objects moving from one position to another.  
-
-Color
-"""""
-When you're trying to differentiate between objects (like units between teams) color is especially effective.  If you're trying to save screen real estate, you can use color as a depiction of flow from one state to another.  While not a way to accurately determine an object's state, it can give a general feeling of its state.  A bright color could also appear if a competitor's eyes should be drawn somewhere.
-
-Particle Systems 
-""""""""""""""""
-Can be used to show an important objects state.  An injured mothership might spark bright electricity which will let the competitor easily know that the ship is about to blow.  A subtle particle system can be used to show the interaction between two objects.
+    Particle Systems 
+        Can be used to show an important objects state.  An injured mothership might spark bright electricity which will let the competitor easily know that the ship is about to blow.  A subtle particle system can be used to show the interaction between two objects.
 
  
 Inspection is Better Than Inspecting

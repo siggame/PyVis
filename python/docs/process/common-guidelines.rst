@@ -44,8 +44,10 @@ Docstrings should try to follow the following format::
         '''
         Short one line description of FUNCTIONality (puns are encouraged)
 
-        More detailed description of this function.  For docstring maintainability reasons, 
-        there is no 80 character limit imposed on these.  Instead your editor should, hopefully word-wrap these. 
+        More detailed description of this function.  
+        For docstring maintainability reasons, there is no 80 character limit imposed on these, but logical breaks are encouraged for readability.
+        Trying to edit an existing paragraph that wraps at 80 characters, no matter what causes time lost in trying to re-organize everything.
+        Your editor should, hopefully word-wrap these. 
 
         :param arg1: first number to be added with
         :param arg2: second number to add
@@ -59,4 +61,74 @@ Docstrings should try to follow the following format::
         '''
         # function
 
+Variable/Module Organization
+----------------------------
+
+Whenever groups of variables are present, their ordering should follow the following rule::
+
+    Variables should be alphabetized when there is no prevailing convention for their order.  
+    Otherwise, the existing conventions should be kept. 
+    Alphabetize when possible.
+
+The most common example of this is width and height.  While width follows height, alphabetically, the prevailing convention is that we state width before height (probably because they're analogues to x and y coordinates).
+So this::
+
+    BORDER_COLOR = (1, 1, 1, 1)
+    BORDER_DASHED = True
+
+    ENTRY_ONE = '1'
+    ENTRY_TWO = '2'
+    ENTRY_THREE = '3'
+    ENTRY_FOUR = '4'
+    ENTRY_FIVE = '5'
+
+    WINDOW_X = 12
+    WINDOW_Y = 15
+    WINDOW_WIDTH = 640
+    WINDOW_HEIGHT = 480
+
+    XYLOPHONE_SOUND = 'funny'
+
+is preferred to this::
+
+    BORDER_COLOR = (1, 1, 1, 1)
+    BORDER_DASHED = True
+
+    ENTRY_FOUR = '4'
+    ENTRY_FIVE = '5'
+    ENTRY_ONE = '1'
+    ENTRY_THREE = '3'
+    ENTRY_TWO = '2'
+
+    WINDOW_HEIGHT = 480
+    WINDOW_WIDTH = 640
+    WINDOW_X = 12
+    WINDOW_Y = 15
+
+    XYLOPHONE_SOUND = 'funny'
+
+Likewise, modules should almost always be alphabetized, unless there is a strict ordering needed (hopefully we didn't write that library).
+
+`Online Poll Of This Issue <http://css-tricks.com/poll-results-how-do-you-order-your-css-properties/>`_
+
+List Comprehensions vs Loops
+----------------------------
+
+Some of you may be tempted to use a list comprehension to perform the task of a loop because... well, I don't know why.  I've just seen this places and it confuses me.  I'm talking about this::
+    
+    class Object(object):
+        # code
+        def print(self):
+            print(self.value)
+
+    list_of_objects = [Object(blah), Object(blerg), Object(foo), Object(bar), Object(spam), ... ]
+
+    [i.print() for i in list_of_objects]
+
+instead of::
+
+    for i in list_of_objects:  
+        i.print()
+
+Functionally, they complete the same task, but there's reasons not to do the first one.  First of all, it's bad python.  Plain and simple you're over-complicating things.  You're using a list comprehension to do something it wasn't born to do.  List comprehensions are for building lists and they do it pretty quickly.  They are not, however, very good at iterating though items and running code.  That's because when you run a for loop, there's no implied list being built.  I see zero advantages for doing it this way, so don't.  List comprehensions should be used for building lists that are to be used and nothing else.  Use your tab key and build a loop instead.
 

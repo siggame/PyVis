@@ -1,11 +1,12 @@
 '''
 The renderer is responsible for building the primitives, and complex objects to be drawn by pyglet.  This module also contains various base classes for primitives which can be modified on the fly.  
 '''
-from pyglet import graphics
-from pyglet import gl
-from pyglet import clock
-
 from copy import copy
+
+from pyglet import clock
+from pyglet import gl
+from pyglet import graphics
+
 
 class Primitive(object):
     '''

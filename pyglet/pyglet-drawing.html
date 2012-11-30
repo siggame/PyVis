@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How Rendering In Pyglet Works &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="Supplementary OpenGL Information" href="../opengl/index.html" />
+    <link rel="prev" title="Pyglet, A Perhaps Useful Guide" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../opengl/index.html" title="Supplementary OpenGL Information"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyglet, A Perhaps Useful Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="how-rendering-in-pyglet-works">
+<h1>How Rendering In Pyglet Works<a class="headerlink" href="#how-rendering-in-pyglet-works" title="Permalink to this headline">¶</a></h1>
+<p>Understanding how pyglet draws stuff to the screen may help you determine what and how you should send stuff to pyglet, so here is how pyglet works.</p>
+<p>There are several objects in pyglet and they form a drawing hierarchy.</p>
+<div class="section" id="the-batch">
+<h2>The Batch<a class="headerlink" href="#the-batch" title="Permalink to this headline">¶</a></h2>
+<p>At the tippy top, the most abstracted object is the batch.  The batch contains absolutely zero information pertaining to how to draw things.  The batch consists of a list of groups in an order that is dictated by OrderedGroups and time of insertion (although you should not rely on the latter).</p>
+</div>
+<div class="section" id="the-group">
+<h2>The Group<a class="headerlink" href="#the-group" title="Permalink to this headline">¶</a></h2>
+<p>The group is similar to a batch, except that there is OpenGL state information attached to it.  When you tell a group to draw, it sets its state, tells everything attached to it to draw, then un-sets the state.  Groups can have parents and children so you can have a state-setting hierarchy:</p>
+<div class="highlight-python"><pre>Batch
+ - OrderedGroup(0)
+   - TexturedGroup('wooly_willy.png')
+     - Wooly Stuff
+   - FoggyGroup
+     - TexturedGroup('kittens.png')
+       - Textured Stuff
+     - NonTextured Stuff</pre>
+</div>
+<p>So when the &#8216;kittens.png&#8217; group is being draw, the OrderedGroup state is set, although probably nothing, the FoggyGroup state is set (which will make all polygons under it appear foggy), and the TexturedGroup state is set (which will apply that texture to all the polygons.  The stuff that groups draw are VertexDomains.</p>
+</div>
+<div class="section" id="the-vertexdomain">
+<h2>The VertexDomain<a class="headerlink" href="#the-vertexdomain" title="Permalink to this headline">¶</a></h2>
+<p>This is an abstraction for an OpenGL Vertex Array. This is the lowest level of the hierarchy as it contains the raw data associated with drawing vertices along with texture coordinates, fog coords, colors, etc. Everything in a VertexDomain must have the same
+<a class="reference external" href="http://www.opengl.org/sdk/docs/man3/xhtml/glDrawArrays.xml">OpenGL Drawing Mode</a> (GL_LINES, GL_POINTS, GL_TRIANGLES, etc.)  This object has zero knowledge of the VertexLists associated with it.</p>
+<p>See the <a class="reference internal" href="../opengl/index.html"><em>Supplementary OpenGL Section</em></a> for more info, if you&#8217;re interested.</p>
+</div>
+<div class="section" id="the-vertexlist">
+<h2>The VertexList<a class="headerlink" href="#the-vertexlist" title="Permalink to this headline">¶</a></h2>
+<p>This is not really apart of the hierarchy.  This is a helper class that points to the raw data in the VertexDomain.</p>
+<p>A vertex domain may contain several primitives in its vertex array:</p>
+<div class="highlight-python"><pre>...AAAABBBBCCCCDDDD...
+       ^  ^
+       |  |
+       ____
+        |
+b_vertex_array points to the start and stop of the associated VertexDomain, vertex array.</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How Rendering In Pyglet Works</a><ul>
+<li><a class="reference internal" href="#the-batch">The Batch</a></li>
+<li><a class="reference internal" href="#the-group">The Group</a></li>
+<li><a class="reference internal" href="#the-vertexdomain">The VertexDomain</a></li>
+<li><a class="reference internal" href="#the-vertexlist">The VertexList</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Pyglet, A Perhaps Useful Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../opengl/index.html"
+                        title="next chapter">Supplementary OpenGL Information</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/pyglet/pyglet-drawing.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../opengl/index.html" title="Supplementary OpenGL Information"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyglet, A Perhaps Useful Guide"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

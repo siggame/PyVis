@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Component Description &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="Widgets" href="widgets.html" />
+    <link rel="prev" title="Visualizer Nomenclature" href="nomenclature.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nomenclature.html" title="Visualizer Nomenclature"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="component-description">
+<h1>Component Description<a class="headerlink" href="#component-description" title="Permalink to this headline">¶</a></h1>
+<p>This document shall serve as a high-level overview of what each component of
+the visualizer architecture shall be responsible for.</p>
+<div class="section" id="ui">
+<h2>UI<a class="headerlink" href="#ui" title="Permalink to this headline">¶</a></h2>
+<p>The UI contains <a class="reference internal" href="widgets.html"><em>Widgets</em></a> which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn&#8217;t know what to do.</p>
+</div>
+<div class="section" id="timeline">
+<h2>Timeline<a class="headerlink" href="#timeline" title="Permalink to this headline">¶</a></h2>
+<p>The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be reponsible for presenting information in the most accurate way possible given the desired playback format. Playback formats shall be one of several possible modes:</p>
+<ul class="simple">
+<li>Unit Mode - This is a first class citizen of the timeline and should be the easiest to draw.  This should show units moving and performing actions one at a time and should have a properly ordered 1-1 correlation with the commands sent from each client.  Competitors should be spending about 10% of their time in this mode.</li>
+<li>Normal Mode - This mode is where competitors should be spending about 90% of their time in this mode.  While not entirely accurate, the information displayed in this mode should be as accurate as possible given that almost all units will be moving at once.  Objects that do not interact with each other in any way should perform their actions simulaneously.  Objects that interact with each other should be appropriately animated such that the displayed information shows the object state dependence on actions.</li>
+<li>Condensed Mode - Condensed mode is similar to normal mode except that two turns are animated at the same time instead of just one in normal mode.  This will probably not be used much and should probably be an afterthought.</li>
+<li>Liquid Mode - This is a theoretical mode between unit and normal mode where units begin their movement slightly lagging behind other units showing the order of actions, but not entirely blocking everything else.</li>
+</ul>
+</div>
+<div class="section" id="renderer">
+<h2>Renderer<a class="headerlink" href="#renderer" title="Permalink to this headline">¶</a></h2>
+<p>The renderer shall contain a set of procedures that Objects can call to get stuff drawn to the screen.  It will automatically look for resources based on the input texture name if it&#8217;s not already loaded.  It should also deallocate resources it hasn&#8217;t been using in a while.</p>
+</div>
+<div class="section" id="input">
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<p>This shall look for input events from the user and send them to the appropriate component.  In the initial implementation, this shall be the UI, then the Timeline, if no UI Widget has responded appropriately.</p>
+<p>Inputs that should be sent are:</p>
+<ul class="simple">
+<li>Down-button (For Drags)</li>
+<li>Up-button (left, right, and middle)</li>
+<li>Selections (If no down-button was responded too)</li>
+<li>Key presses</li>
+<li>Voice Commands :|</li>
+</ul>
+</div>
+<div class="section" id="controller">
+<h2>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h2>
+<p>This shall tell the timeline where it should currently be, and handle a few other general things in the system.  The config module should primarily be used by this.</p>
+</div>
+<div class="section" id="networking">
+<h2>Networking<a class="headerlink" href="#networking" title="Permalink to this headline">¶</a></h2>
+<p>Shall support spectating.  More details to follow.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Component Description</a><ul>
+<li><a class="reference internal" href="#ui">UI</a></li>
+<li><a class="reference internal" href="#timeline">Timeline</a></li>
+<li><a class="reference internal" href="#renderer">Renderer</a></li>
+<li><a class="reference internal" href="#input">Input</a></li>
+<li><a class="reference internal" href="#controller">Controller</a></li>
+<li><a class="reference internal" href="#networking">Networking</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nomenclature.html"
+                        title="previous chapter">Visualizer Nomenclature</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="widgets.html"
+                        title="next chapter">Widgets</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/design/component_description.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nomenclature.html" title="Visualizer Nomenclature"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

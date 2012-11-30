@@ -1,0 +1,131 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Supplementary OpenGL Information &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="prev" title="How Rendering In Pyglet Works" href="../pyglet/pyglet-drawing.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../pyglet/pyglet-drawing.html" title="How Rendering In Pyglet Works"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="supplementary-opengl-information">
+<h1>Supplementary OpenGL Information<a class="headerlink" href="#supplementary-opengl-information" title="Permalink to this headline">¶</a></h1>
+<p>This section is not required reading for doing 90% of the visualizer, but I have always felt it can be useful to know the background of a technology when making decisions in your coding.</p>
+<div class="section" id="what-is-opengl">
+<h2>What is OpenGL?<a class="headerlink" href="#what-is-opengl" title="Permalink to this headline">¶</a></h2>
+<p>OpenGL stands for OPEN Graphics Library.  But let&#8217;s be clear here.  OpenGL is neither open nor a graphics library in the general sense of either term. OpenGL is a tightly controlled standard set forth by The Khronos Group, which has people on its board from many major OS and graphics chipset providers. (e.g. Microsoft, Apple, NVidia, ATI, etc.)</p>
+<p>If you&#8217;re not familiar with the concept of standards, then I&#8217;ll explain here. A standard is a name brand associated with a specification.  To say that you are OpenGL compatible, or any other standard compatible, you must follow the strict set of specifications in the standard or potentially face legal implications. Typically there&#8217;s some sort of integration test that the standard maker performs then deems the source code compatible or not.</p>
+<p>So what OpenGL is, in a nutshell, is a set of rules that Graphics Card makers, software renderer developers, and the like must follow in their drivers to say that they run a certain version of OpenGL.</p>
+<p>The only open implementation of OpenGL that I know of is <a class="reference external" href="http://www.mesa3d.org">Mesa3D</a>.  It&#8217;s a software renderer used primarily by GNU/Linux.</p>
+</div>
+<div class="section" id="retained-mode-vs-immediate-mode">
+<h2>Retained Mode vs Immediate Mode<a class="headerlink" href="#retained-mode-vs-immediate-mode" title="Permalink to this headline">¶</a></h2>
+<p>There are two high-level approaches to rendering stuff: retained mode and immediate mode.  In retained mode, you send everything you want to draw to the graphics card once, then keep updating the stored information when you want to change something.  In immediate mode, you tell the graphics card exactly what to render every single frame.  Nothing is stored on the graphics card inbetween frames.  Retained mode is much faster, but can be more difficult to design a system around.  Pyglet thrives on retained mode as sending individual drawing calls ever frame is even slower when you&#8217;re reliant on the speed of python.</p>
+<p>Historically, OpenGL only supported immediate mode, using calls, glBegin() and glEnd().  Those calls are now deprecated and immediate mode is on its way out as The Khronos Group tries to streamline the API.</p>
+<p>Retained mode is managed using Display Lists (being deprecated) and Vertex Arrays through Vertex Buffer Objects.  Vertex arrays are lists of vertices that are stored in graphics memory along with colors, texture coordiates, fog coordinates, etc.  Then calling, glDrawArrays() or glMultiDrawArrays() tells OpenGL to use those verticies in memory to draw an object.  This becomes especially useful when you have a lot of reusable things in graphics memory.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Supplementary OpenGL Information</a><ul>
+<li><a class="reference internal" href="#what-is-opengl">What is OpenGL?</a></li>
+<li><a class="reference internal" href="#retained-mode-vs-immediate-mode">Retained Mode vs Immediate Mode</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../pyglet/pyglet-drawing.html"
+                        title="previous chapter">How Rendering In Pyglet Works</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/opengl/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../pyglet/pyglet-drawing.html" title="How Rendering In Pyglet Works"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

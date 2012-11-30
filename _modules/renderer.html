@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>renderer &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for renderer</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The renderer is responsible for building the primitives, and complex objects to be drawn by pyglet.  This module also contains various base classes for primitives which can be modified on the fly.  </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">clock</span>
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">gl</span>
+<span class="kn">from</span> <span class="nn">pyglet</span> <span class="kn">import</span> <span class="n">graphics</span>
+
+
+<div class="viewcode-block" id="Primitive"><a class="viewcode-back" href="../code/renderer.html#renderer.Primitive">[docs]</a><span class="k">class</span> <span class="nc">Primitive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is the base class for any primitive to draw to the screen. To be used most effectively, all library-provided primitives should be declared within :class:`renderer.Renderer`.</span>
+
+<span class="sd">    :param renderer: renderer instance to add this primitive to.</span>
+<span class="sd">    :type renderer: :class:`renderer.Renderer`</span>
+
+<span class="sd">    :raises: AttributeError if renderer is not passed to constructor and not instantiated from an instance of a renderer</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">vertex_lists</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">renderer</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span>
+                <span class="sd">&#39;&#39;&#39;You must either pass in renderer argument to &#39;&#39;&#39;</span>
+                <span class="sd">&#39;&#39;&#39;the primitive or use renderer.Primitive()&#39;&#39;&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer</span>
+</div>
+<div class="viewcode-block" id="Renderer"><a class="viewcode-back" href="../code/renderer.html#renderer.Renderer">[docs]</a><span class="k">class</span> <span class="nc">Renderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class allows access to the primitives (the basic drawing building blocks) to draw just about anything.  Widgets should use these to draw themselves::</span>
+
+<span class="sd">        class Button(RectWidget):</span>
+<span class="sd">            def __init__(self, renderer, x, y, width, height, text):</span>
+<span class="sd">                btn_base = renderer.Rectangle(x, y, width, height, </span>
+<span class="sd">                    color=(0.2, 0.3, 0.2))</span>
+<span class="sd">                btn_text = renderer.Text(x, y, width, height, text)</span>
+<span class="sd">                # etc. </span>
+<span class="sd">                # etc.</span>
+
+<span class="sd">    primitives should be called through the Renderer instance instead of through the class (i.e.)::</span>
+<span class="sd">        </span>
+<span class="sd">        renderer = Renderer()</span>
+<span class="sd">        renderer.Rectangle()</span>
+
+<span class="sd">    instead of::</span>
+<span class="sd">        </span>
+<span class="sd">        renderer = Renderer()</span>
+<span class="sd">        Renderer.Rectangle(renderer=renderer)</span>
+
+<span class="sd">    There is special python magic to make that work.  See `__init__()` for that.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">fg_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">bg_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">texture</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fps_display</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">ClockDisplay</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_frame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">Batch</span><span class="p">()</span>
+
+        <span class="c"># -*- WARNING -*-</span>
+        <span class="c"># -*- Python magic -*-</span>
+        <span class="c"># Luckily this only has to be called once per renderer </span>
+        <span class="c"># and per program there is on average 1.0 renderer</span>
+        <span class="c"># (Actually it might be useful to have two of these...)</span>
+        <span class="c"># Finds all classes in Renderer that inherit Primitive</span>
+        <span class="c"># at some point, and for each, creates a copy for this </span>
+        <span class="c"># instance and sets the renderer attribute for each </span>
+        <span class="c"># to this instance.</span>
+
+        <span class="c"># This is just so we can do stuff like renderer.Rectangle()</span>
+        <span class="c"># without having to pass in the renderer because that doesn&#39;t</span>
+        <span class="c"># make any sense.</span>
+        <span class="c"># -*- Python magic -*-</span>
+        <span class="c"># -*- WARNING -*-</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;__mro__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Primitive</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">__mro__</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">cls</span><span class="p">,),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="bp">self</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="Renderer.register_with_app"><a class="viewcode-back" href="../code/renderer.html#renderer.Renderer.register_with_app">[docs]</a>    <span class="k">def</span> <span class="nf">register_with_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method automagically sets up the requests from the application.  </span>
+<span class="sd">        It is equivalent to::</span>
+
+<span class="sd">            app.request_update_on_draw(renderer.init_frame, 0)</span>
+<span class="sd">            app.request_update_on_draw(renderer.draw_frame, 100)</span>
+<span class="sd">        </span>
+<span class="sd">        :param app: application to register with</span>
+<span class="sd">        :type app: :class:`application.Application`</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">            </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draw_frame</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Renderer.init_frame"><a class="viewcode-back" href="../code/renderer.html#renderer.Renderer.init_frame">[docs]</a>    <span class="k">def</span> <span class="nf">init_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method should be called at the beginning of every game loop.  </span>
+<span class="sd">        It does the pre-loop set up, if any.</span>
+
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Renderer.draw_frame"><a class="viewcode-back" href="../code/renderer.html#renderer.Renderer.draw_frame">[docs]</a>    <span class="k">def</span> <span class="nf">draw_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method should be called at (or near) the end of every game loop after all the objects have been updated and are ready to draw to the screen.</span>
+
+<span class="sd">        This will draw the batch associated with the renderer.</span>
+
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fps_display</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="Renderer.Rectangle"><a class="viewcode-back" href="../code/renderer.html#renderer.Renderer.Rectangle">[docs]</a>    <span class="k">class</span> <span class="nc">Rectangle</span><span class="p">(</span><span class="n">Primitive</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This class creates a rectangle primitive.  </span>
+
+<span class="sd">        :param x: the x offset (from the left side of the screen) to draw the rectangle.</span>
+<span class="sd">        :type x: float</span>
+
+<span class="sd">        :param y: is the y offset (from the bottom of the screen) to draw the rectangle.</span>
+<span class="sd">        :type y: float</span>
+
+<span class="sd">        :param width: is the width of the rectangle</span>
+<span class="sd">        :type width: float</span>
+
+<span class="sd">        :param height: is the height of the rectangle</span>
+<span class="sd">        :type height: float</span>
+
+<span class="sd">        :param texture: is the texture to paint the rectangle with </span>
+<span class="sd">        :type texture: </span>
+
+<span class="sd">        :param group: is the group, if any, that the rectangle should be associated with.  Using texture will automatically make this a part of the appropriate TextureGroup and make *group* its parent.</span>
+<span class="sd">        :type group: Group</span>
+
+<span class="sd">        :param color: is the color to paint the rectangle.  If not specified, the renderer&#39;s default `fg_color` will be used instead.</span>
+<span class="sd">        :type color: 3-tuple or 4-tuple of floats from 0 to 1 </span>
+
+<span class="sd">        :param filled: specified whether to draw this as a filled-in rectangle or rectangle outline.</span>
+<span class="sd">        :type filled: boolean</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">texture</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">group</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            
+            <span class="nb">super</span><span class="p">(</span><span class="n">Renderer</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">color</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span><span class="o">.</span><span class="n">fg_color</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;v2f&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                     <span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">,</span>
+                     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&#39;c4f&#39;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="n">texture</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="s">&#39;t2f&#39;</span><span class="p">,</span>
+                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                         <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">TextureGroup</span><span class="p">(</span><span class="n">texture</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">filled</span><span class="p">:</span>
+                <span class="c"># TODO: Change this to gl.GL_TRIANGLE_FAN when pyglet has fixed its</span>
+                <span class="c"># allocator issues around TRIANGLE_FANs and LINE_LOOPs</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_QUADS</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">gl</span><span class="o">.</span><span class="n">GL_LINE_LOOP</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertex_lists</span><span class="p">[</span><span class="s">&#39;rect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> 
+                    <span class="n">gl</span><span class="o">.</span><span class="n">GL_QUADS</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

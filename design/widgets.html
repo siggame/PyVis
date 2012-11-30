@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Widgets &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="Visualizer Development Process" href="../process/index.html" />
+    <link rel="prev" title="Component Description" href="component_description.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../process/index.html" title="Visualizer Development Process"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="component_description.html" title="Component Description"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="widgets">
+<h1>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h1>
+<p>This document will contain the list of possibly desired widgets for the UI. This will be used to discuss what we really, really want, what would be nice, and what could be postponed or even ignored indefinitely.</p>
+<dl class="glossary docutils">
+<dt id="term-windows">Windows</dt>
+<dd><p class="first">Contain groups of Widgets</p>
+<p class="last">Use Cases: Options Dialog, Debugging Window, Save/Open Window</p>
+</dd>
+<dt id="term-buttons">Buttons</dt>
+<dd><p class="first">Will trigger events to occur when released</p>
+<p class="last">Use Cases: Pause, Play, Skip, Open Options, Menus, changing modes, Places...</p>
+</dd>
+<dt id="term-text-box">Text Box</dt>
+<dd><p class="first">Will display text either as a label, description, or otherwise</p>
+<p class="last">Use Cases: Options Dialog, Tables</p>
+</dd>
+<dt id="term-input-box">Input Box</dt>
+<dd><p class="first">Allow user to modify a value</p>
+<p class="last">Options dialog...,  Turn input</p>
+</dd>
+<dt id="term-table">Table</dt>
+<dd><p class="first">Shows data in an organized fashion</p>
+<p class="last">Use cases: Debug window for a list of values, Bottom of screen for showing timeline tracks?</p>
+</dd>
+<dt id="term-slider">Slider</dt>
+<dd><p class="first">Numeric number modifier</p>
+<p class="last">Use cases: Turn slider at bottom of screen, speed modifier, numeric options, scrolling up/down or left/right on a window.</p>
+</dd>
+<dt id="term-radio-buttons">Radio Buttons</dt>
+<dd>Could just use slider, I guess</dd>
+<dt id="term-toolbar-menu">Toolbar Menu</dt>
+<dd>Contains buttons which will allow the user to open new glogs, options, etc.</dd>
+</dl>
+<div class="section" id="things-that-are-a-must-have">
+<h2>Things That Are a Must Have<a class="headerlink" href="#things-that-are-a-must-have" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Open Glog Dialog or something similar</li>
+<li>Some way of intuitively controlling the timeline</li>
+</ul>
+</div>
+<div class="section" id="possible-short-time-fixes">
+<h2>Possible Short-Time Fixes<a class="headerlink" href="#possible-short-time-fixes" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Leverage Tkinter for menus, open-file dialogs, and drag n&#8217; drop until a non-Tkinter approach is decided upon.  This may have to be the solution we continue to use for dialogs and drag n&#8217; drop since it is packaged with python and other solutions may be costly for us (time and packaging).</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Widgets</a><ul>
+<li><a class="reference internal" href="#things-that-are-a-must-have">Things That Are a Must Have</a></li>
+<li><a class="reference internal" href="#possible-short-time-fixes">Possible Short-Time Fixes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="component_description.html"
+                        title="previous chapter">Component Description</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../process/index.html"
+                        title="next chapter">Visualizer Development Process</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/design/widgets.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../process/index.html" title="Visualizer Development Process"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="component_description.html" title="Component Description"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

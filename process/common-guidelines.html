@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Official Resource For Writing Proper Visualizer Code &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="Pyglet, A Perhaps Useful Guide" href="../pyglet/index.html" />
+    <link rel="prev" title="Guidelines for Code-Review" href="review-guidelines.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../pyglet/index.html" title="Pyglet, A Perhaps Useful Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="review-guidelines.html" title="Guidelines for Code-Review"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="official-resource-for-writing-proper-visualizer-code">
+<h1>Official Resource For Writing Proper Visualizer Code<a class="headerlink" href="#official-resource-for-writing-proper-visualizer-code" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="importing-modules">
+<h2>Importing Modules<a class="headerlink" href="#importing-modules" title="Permalink to this headline">¶</a></h2>
+<p>Module imports should all appear at the very top of the file unless there is a good reason not to (e.g. a user selects if he wants OpenGL or DirectX rendering (!!NOT A SUPPORTED FEATURE!!) ).</p>
+<p><tt class="docutils literal"><span class="pre">from</span> <span class="pre">module</span> <span class="pre">import</span> <span class="pre">*</span></tt> is never acceptable.  This can cause name conflicts, and makes it more difficult to determine the origin of objects.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">application</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">renderer</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">widgets</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>makes it impossible to determine that Rectangle came from the module, renderer.  This is preferred:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">renderer</span> <span class="kn">import</span> <span class="n">Renderer</span><span class="p">,</span> <span class="n">Rectangle</span>
+<span class="kn">from</span> <span class="nn">widgets</span> <span class="kn">import</span> <span class="n">Button</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">application</span>
+<span class="kn">import</span> <span class="nn">renderer</span>
+<span class="kn">import</span> <span class="nn">widgets</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In these cases, the origin of Rectangle is clearly visible.</p>
+</div>
+<div class="section" id="docstrings">
+<h2>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this headline">¶</a></h2>
+<p>Proper docstrings are required on all public methods (i.e. methods that do not start with a single underscore), and are suggested for usage with all private methods.  These docstrings generate the documentation used by sphinx and are easy-to-read when just reading code.  If someone ever has to look at the source to determine how to use a certain module, then the docstring is not clear enough.</p>
+<p>Docstrings should try to follow the following format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Short one line description of FUNCTIONality (puns are encouraged)</span>
+
+<span class="sd">    More detailed description of this function.</span>
+<span class="sd">    For docstring maintainability reasons, there is no 80 character limit imposed on these, but logical breaks are encouraged for readability.</span>
+<span class="sd">    Trying to edit an existing paragraph that wraps at 80 characters, no matter what causes time lost in trying to re-organize everything.</span>
+<span class="sd">    Your editor should, hopefully word-wrap these.</span>
+
+<span class="sd">    :param arg1: first number to be added with</span>
+<span class="sd">    :param arg2: second number to add</span>
+<span class="sd">    :type arg2: int</span>
+<span class="sd">    :param arg3: optional third number to add.</span>
+<span class="sd">    :type arg3: float</span>
+
+<span class="sd">    :raises: TypeError if NoneType passed in for arg3</span>
+
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># function</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="variable-module-organization">
+<h2>Variable/Module Organization<a class="headerlink" href="#variable-module-organization" title="Permalink to this headline">¶</a></h2>
+<p>Whenever groups of variables are present, their ordering should follow the following rule:</p>
+<div class="highlight-python"><pre>Variables should be alphabetized when there is no prevailing convention for their order.
+Otherwise, the existing conventions should be kept.
+Alphabetize when possible.</pre>
+</div>
+<p>The most common example of this is width and height.  While width follows height, alphabetically, the prevailing convention is that we state width before height (probably because they&#8217;re analogues to x and y coordinates).
+So this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">BORDER_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">BORDER_DASHED</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">ENTRY_ONE</span> <span class="o">=</span> <span class="s">&#39;1&#39;</span>
+<span class="n">ENTRY_TWO</span> <span class="o">=</span> <span class="s">&#39;2&#39;</span>
+<span class="n">ENTRY_THREE</span> <span class="o">=</span> <span class="s">&#39;3&#39;</span>
+<span class="n">ENTRY_FOUR</span> <span class="o">=</span> <span class="s">&#39;4&#39;</span>
+<span class="n">ENTRY_FIVE</span> <span class="o">=</span> <span class="s">&#39;5&#39;</span>
+
+<span class="n">WINDOW_X</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">WINDOW_Y</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">WINDOW_WIDTH</span> <span class="o">=</span> <span class="mi">640</span>
+<span class="n">WINDOW_HEIGHT</span> <span class="o">=</span> <span class="mi">480</span>
+
+<span class="n">XYLOPHONE_SOUND</span> <span class="o">=</span> <span class="s">&#39;funny&#39;</span>
+</pre></div>
+</div>
+<p>is preferred to this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">BORDER_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">BORDER_DASHED</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">ENTRY_FOUR</span> <span class="o">=</span> <span class="s">&#39;4&#39;</span>
+<span class="n">ENTRY_FIVE</span> <span class="o">=</span> <span class="s">&#39;5&#39;</span>
+<span class="n">ENTRY_ONE</span> <span class="o">=</span> <span class="s">&#39;1&#39;</span>
+<span class="n">ENTRY_THREE</span> <span class="o">=</span> <span class="s">&#39;3&#39;</span>
+<span class="n">ENTRY_TWO</span> <span class="o">=</span> <span class="s">&#39;2&#39;</span>
+
+<span class="n">WINDOW_HEIGHT</span> <span class="o">=</span> <span class="mi">480</span>
+<span class="n">WINDOW_WIDTH</span> <span class="o">=</span> <span class="mi">640</span>
+<span class="n">WINDOW_X</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">WINDOW_Y</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="n">XYLOPHONE_SOUND</span> <span class="o">=</span> <span class="s">&#39;funny&#39;</span>
+</pre></div>
+</div>
+<p>Likewise, modules should almost always be alphabetized, unless there is a strict ordering needed (hopefully we didn&#8217;t write that library).</p>
+<p><a class="reference external" href="http://css-tricks.com/poll-results-how-do-you-order-your-css-properties/">Online Poll Of This Issue</a></p>
+</div>
+<div class="section" id="list-comprehensions-vs-loops">
+<h2>List Comprehensions vs Loops<a class="headerlink" href="#list-comprehensions-vs-loops" title="Permalink to this headline">¶</a></h2>
+<p>Some of you may be tempted to use a list comprehension to perform the task of a loop because... well, I don&#8217;t know why.  I&#8217;ve just seen this places and it confuses me.  I&#8217;m talking about this:</p>
+<div class="highlight-python"><pre>class Object(object):
+    # code
+    def print(self):
+        print(self.value)
+
+list_of_objects = [Object(blah), Object(blerg), Object(foo), Object(bar), Object(spam), ... ]
+
+[i.print() for i in list_of_objects]</pre>
+</div>
+<p>instead of:</p>
+<div class="highlight-python"><pre>for i in list_of_objects:
+    i.print()</pre>
+</div>
+<p>Functionally, they complete the same task, but there&#8217;s reasons not to do the first one.  First of all, it&#8217;s bad python.  Plain and simple you&#8217;re over-complicating things.  You&#8217;re using a list comprehension to do something it wasn&#8217;t born to do.  List comprehensions are for building lists and they do it pretty quickly.  They are not, however, very good at iterating though items and running code.  That&#8217;s because when you run a for loop, there&#8217;s no implied list being built.  I see zero advantages for doing it this way, so don&#8217;t.  List comprehensions should be used for building lists that are to be used and nothing else.  Use your tab key and build a loop instead.</p>
+</div>
+<div class="section" id="commit-messages">
+<h2>Commit Messages<a class="headerlink" href="#commit-messages" title="Permalink to this headline">¶</a></h2>
+<p>Commit messages should try to follow this model:</p>
+<div class="highlight-python"><pre>Capitalized, short (50 chars or less) summary
+
+More detailed explanatory text, if necessary.  Wrap it to about 72
+characters or so.  In some contexts, the first line is treated as the
+subject of an email and the rest of the text as the body.  The blank
+line separating the summary from the body is critical (unless you omit
+the body entirely); tools like rebase can get confused if you run the
+two together.
+
+Write your commit message in the present tense: "Fix bug" and not "Fixed
+bug."  This convention matches up with commit messages generated by
+commands like git merge and git revert.
+
+Further paragraphs come after blank lines.
+
+- Bullet points are okay, too
+
+- Typically a hyphen or asterisk is used for the bullet, preceded by a
+single space, with blank lines in between, but conventions vary here
+
+- Use a hanging indent</pre>
+</div>
+<p>Taken from <a class="reference external" href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html</a></p>
+<p>See that post for reasons.</p>
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Raising exceptions should occur in Python 3.x fashion:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">CustomException</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>instead of:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">raise</span> <span class="n">CustomException</span><span class="p">,</span> <span class="s">&#39;data&#39;</span>
+</pre></div>
+</div>
+<p>This is for stylistic reasons and to become accustomed with the python 3.x format.  Exceptions are classes and should be treated as such.</p>
+</div>
+<div class="section" id="print-statements">
+<h2>Print Statements<a class="headerlink" href="#print-statements" title="Permalink to this headline">¶</a></h2>
+<p>The print function is preferred over the print statement.  Since the future of python is 3.x, we should start to accustom ourselves with the new format for when we make the switch.</p>
+<p>To use the print function, this must appear at the top of the source file before any other import:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+</pre></div>
+</div>
+<p>Likewise, any language feature which is available in 2.7, but not required until 3.x should use the 3.x format.</p>
+<p>You can see these language features by looking for the back-porting notes in this document: <a class="reference external" href="http://docs.pythonsprints.com/python3_porting/py-porting.html">http://docs.pythonsprints.com/python3_porting/py-porting.html</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Official Resource For Writing Proper Visualizer Code</a><ul>
+<li><a class="reference internal" href="#importing-modules">Importing Modules</a></li>
+<li><a class="reference internal" href="#docstrings">Docstrings</a></li>
+<li><a class="reference internal" href="#variable-module-organization">Variable/Module Organization</a></li>
+<li><a class="reference internal" href="#list-comprehensions-vs-loops">List Comprehensions vs Loops</a></li>
+<li><a class="reference internal" href="#commit-messages">Commit Messages</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#print-statements">Print Statements</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="review-guidelines.html"
+                        title="previous chapter">Guidelines for Code-Review</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../pyglet/index.html"
+                        title="next chapter">Pyglet, A Perhaps Useful Guide</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/process/common-guidelines.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../pyglet/index.html" title="Pyglet, A Perhaps Useful Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="review-guidelines.html" title="Guidelines for Code-Review"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Visualizer Nomenclature &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="Component Description" href="component_description.html" />
+    <link rel="prev" title="3. Input" href="../code/input.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="component_description.html" title="Component Description"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../code/input.html" title="3. Input"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="visualizer-nomenclature">
+<h1>Visualizer Nomenclature<a class="headerlink" href="#visualizer-nomenclature" title="Permalink to this headline">¶</a></h1>
+<p>This document shall have precedence over ANY other document in referring to various elements of the visualizer.  If there is a name-conflict with this document, then it shall be fixed to be in accordance with this document or a motion to have this document amended shall occur.</p>
+<div class="section" id="gameplay-modes">
+<h2>Gameplay Modes<a class="headerlink" href="#gameplay-modes" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-unit-mode">Unit-Mode</dt>
+<dd>This has in the past also been referred to as unit-by-unit mode.  This mode appears in the visualizer as movement occurring from a single object at a time, in the order that commands were sent to the server.  This is useful for debugging unit logic based on the exact state of the game.</dd>
+<dt id="term-normal-mode">Normal-Mode</dt>
+<dd>This has in the past also been referred to as turn-by-turn mode.  This mode appears in the visualizer as all objects in a turn moving simultaneously (intelligently or not).  This is useful for showing the flow of an AI on a turn-by-turn basis.</dd>
+<dt id="term-condensed-mode">Condensed-Mode</dt>
+<dd>This has in the past also been referred to as two-turn-mode.  This mode appears in the visualizer as all objects for two (or more) turns moving simultaneously, having the appearance of a real-time game. This is useful for entertainment purposes and showing the flow of a game to some extent.</dd>
+<dt id="term-liquid-mode">Liquid-Mode</dt>
+<dd>This mode is a theoretical mode that is a mixture of Unit-Mode and Normal-Mode.  Object movement is lagged to some extent based on when commands occurred, but there is still a fair amount of simultaneous moves occurring.  This mode may be useful for quick debugging by inspection, but still showing the overall flow of the game.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Visualizer Nomenclature</a><ul>
+<li><a class="reference internal" href="#gameplay-modes">Gameplay Modes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../code/input.html"
+                        title="previous chapter">3. Input</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="component_description.html"
+                        title="next chapter">Component Description</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/design/nomenclature.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="component_description.html" title="Component Description"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../code/input.html" title="3. Input"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

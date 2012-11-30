@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Vizualizer Mantra &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="1. Application" href="../code/application.html" />
+    <link rel="prev" title="PyVis Documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../code/application.html" title="1. Application"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="PyVis Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="vizualizer-mantra">
+<h1>Vizualizer Mantra<a class="headerlink" href="#vizualizer-mantra" title="Permalink to this headline">¶</a></h1>
+<p>This work shall act as a set of guidelines for plugin design decisions.  It shall also give guidance in the visualizer core on what should be improved such that plugins may more easily achieve the goals set forth by this document.</p>
+<div class="section" id="purpose-of-the-visualizer">
+<h2>Purpose of the Visualizer<a class="headerlink" href="#purpose-of-the-visualizer" title="Permalink to this headline">¶</a></h2>
+<p>There are several purposes that could be said that the visualizer holds, but above all the purpose of the visualizer is to convey as much artificial intelligence information in the most accurate, succinct way possible.  Only when this goal is met, should other features and fluff be worked on.</p>
+<p>Other purposes of the visualizer include (but are not limited to):</p>
+<blockquote>
+<div><ul class="simple">
+<li>PR fluff for attracting new competitors</li>
+<li>Tournament bracket visualization</li>
+<li>Human client for certain games</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="should-the-visualizer-be-attractive">
+<h2>Should the visualizer be attractive?<a class="headerlink" href="#should-the-visualizer-be-attractive" title="Permalink to this headline">¶</a></h2>
+<p>I&#8217;ll go into this more a little later, but the answer is emphatically, yes!  In order to properly convey information, your visualizer has to have as few distractions as possible.  An ugly visualizer is a distracting visualizer and takes away from giving competitors the ability to easily debug issues with their AI.  Likewise, too many visuals can make the visualizer more attractive, but can also distract the competitor, so a balance between beauty and minimalism must be achieved.</p>
+</div>
+<div class="section" id="visualizing-everything">
+<h2>Visualizing Everything<a class="headerlink" href="#visualizing-everything" title="Permalink to this headline">¶</a></h2>
+<p>Every action that a competitor can issue in their AI through the client must have a visual analogue.  Everything from movements and attacks to talking and additional debugging information, if available.  In almost every game, all of this information, if conveyed at once, would present information overload for the competitor or there simply isn&#8217;t enough screen real-estate to display it all at once.  What you want to do, then is prioritize each of these things and maybe assign a time percentage associated with it, which approximates how much time you think a competitor will look at this information for a competition.</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="18%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute/Event</th>
+<th class="head">Time Chunk</th>
+<th class="head">Reasoning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Move</td>
+<td>95%</td>
+<td>For this game pathfinding is
+pivotal and issues with
+pathing is always critical</td>
+</tr>
+<tr class="row-odd"><td>Attack</td>
+<td>90%</td>
+<td>Attacks are the secondary
+mechanic of this game</td>
+</tr>
+<tr class="row-even"><td>Talk</td>
+<td>60%</td>
+<td>Competitors will probably
+only display talk
+information when crucial.
+However, they may not always
+be looking for this info.</td>
+</tr>
+<tr class="row-odd"><td>Per-unit money</td>
+<td>20%</td>
+<td>Not overly useful to know
+individual unit moniez
+constantly.</td>
+</tr>
+<tr class="row-even"><td>Total money</td>
+<td>80%</td>
+<td>Crucial to end-game winnar</td>
+</tr>
+<tr class="row-odd"><td>Score</td>
+<td>80%</td>
+<td>Same as above, except
+includes number of bots</td>
+</tr>
+<tr class="row-even"><td>Territory Control</td>
+<td>20%</td>
+<td>Can be easily seen by just
+looking at the map, but
+takes so little space, no
+reason to not show it.</td>
+</tr>
+<tr class="row-odd"><td>Health</td>
+<td>80%</td>
+<td>Crucial to determine unit
+deaths.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The above table tells us that we should almost constantly show, in order, moves, attacks, score/total money, and health.  Talk is pretty important but could perhaps be toggle-able.  Territory control is not hugely important, but takes up minimal screen real-estate.  Per-unit money should not be a priority to show on the screen, but should be easily available  when needed.  Maybe we could make it visible when a unit is selected, or perhaps when it&#8217;s being hovered over.</p>
+</div>
+<div class="section" id="how-to-convey-information">
+<h2>How To Convey Information<a class="headerlink" href="#how-to-convey-information" title="Permalink to this headline">¶</a></h2>
+<p>There&#8217;s a lot of ways we can show information.  You&#8217;ll have to rely on creativity for a lot of this, but some of the common ways are:</p>
+<dl class="glossary docutils">
+<dt id="term-a-texture">A texture</dt>
+<dd>For example if there&#8217;s 4 unit types, you might have 4 textures to differentiate between them easily.</dd>
+<dt id="term-a-changing-bar">A changing bar</dt>
+<dd>The most common example of this is health.  If a unit&#8217;s health is depleting, the bar decreases in size.  But that&#8217;s not the only way.  If there&#8217;s only one unit type in the game, and such granularity is not needed for health, you could have 4 textures which depict different states of disrepair for the unit.  With that, you&#8217;ve effectively saved some real-estate on a unit that can be used for something else.  You could also depict a falling timer or perhaps a score ceiling with two racing bars.</dd>
+<dt id="term-plain-text">Plain text</dt>
+<dd>Scores are most easily displayed with this, especially if there is no ceiling which competitors are racing to achieve.  Debugging information, units talking, and anything else that would only be confusing if it was depicted in a graphical format. Never use plain text for something that occurs all over the screen and is important.  Health would appear awful as numbers.</dd>
+<dt id="term-animations">Animations</dt>
+<dd>Animations should be used for a couple of reasons.  When you&#8217;re trying to depict the flow of information from one state to another or when you want to draw the competitors eyes to a certain portion of the screen.  If the state of an object is changing and it&#8217;s not crucial information, it shouldn&#8217;t be animated.  If you have a game which goes from one game mode to another, then an animation should be used to let the user know that the game mode is changing.  The most obvious and pertinent usage of animation is, of course, objects moving from one position to another.</dd>
+<dt id="term-color">Color</dt>
+<dd>When you&#8217;re trying to differentiate between objects (like units between teams) color is especially effective.  If you&#8217;re trying to save screen real estate, you can use color as a depiction of flow from one state to another.  While not a way to accurately determine an object&#8217;s state, it can give a general feeling of its state.  A bright color could also appear if a competitor&#8217;s eyes should be drawn somewhere.</dd>
+<dt id="term-particle-systems">Particle Systems</dt>
+<dd>Can be used to show an important objects state.  An injured mothership might spark bright electricity which will let the competitor easily know that the ship is about to blow.  A subtle particle system can be used to show the interaction between two objects.</dd>
+</dl>
+</div>
+<div class="section" id="inspection-is-better-than-inspecting">
+<h2>Inspection is Better Than Inspecting<a class="headerlink" href="#inspection-is-better-than-inspecting" title="Permalink to this headline">¶</a></h2>
+<p>Visual inspection is priority.</p>
+<p>What this means is that if there is something important that a competitor can only see by a click or series of clicks, then you need to redesign.  If you have to sacrifice beauty to achieve this, then you should.  The visualizer is a tool, not an emotionally driven experience for the competitor.  All information that a competitor would want to see more than 60% of the time should be displayed in some way (perhaps even notifying them that something has changed, but no specifics, unless further inspection occurs).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Vizualizer Mantra</a><ul>
+<li><a class="reference internal" href="#purpose-of-the-visualizer">Purpose of the Visualizer</a></li>
+<li><a class="reference internal" href="#should-the-visualizer-be-attractive">Should the visualizer be attractive?</a></li>
+<li><a class="reference internal" href="#visualizing-everything">Visualizing Everything</a></li>
+<li><a class="reference internal" href="#how-to-convey-information">How To Convey Information</a></li>
+<li><a class="reference internal" href="#inspection-is-better-than-inspecting">Inspection is Better Than Inspecting</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">PyVis Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../code/application.html"
+                        title="next chapter">1. Application</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/plugins/visualizer-mantra.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../code/application.html" title="1. Application"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="PyVis Documentation"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

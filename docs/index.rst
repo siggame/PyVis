@@ -50,6 +50,7 @@ Supplementary Information
     pyglet/index.rst
     pyglet/pyglet-drawing.rst
     opengl/index.rst
+    git/git-submodules.rst
 
 Indices and tables
 ==================

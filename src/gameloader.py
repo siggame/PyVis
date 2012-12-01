@@ -4,7 +4,12 @@
 import json
 import bz2
 import gzip
+import zipfile
 from cStringIO import StringIO
+
+import imp
+import config
+import os
 
 class GameLoader(object):
     '''
@@ -14,7 +19,10 @@ class GameLoader(object):
         self.magic_dict = {
                 '\x1f\x8b\x08': 'gz',
                 '\x42\x5a\x68': 'bz2',
-                #'\x50\x4b\x04': 'zip',
+                '\x50\x4b\x07': 'zip',
+                '\x50\x4b\x05': 'zip',
+                '\x50\x4b\x04': 'zip',
+                '\x50\x4b\x03': 'zip',
                 }
 
         self.max_len = max(len(i) for i in self.magic_dict)
@@ -27,6 +35,13 @@ class GameLoader(object):
         :type string: string
         '''
         data = json.loads(string)
+
+        game_name = data['gameName'].lower()
+        path = os.path.join(config.PLUGIN_DIR, 
+                game_name, 'main.py')
+
+        game = imp.load_source(game_name, path)
+
 
     def determine_type(self, s):
         '''
@@ -61,6 +76,10 @@ class GameLoader(object):
         elif ftype == 'gz':
             gz = gzip.GzipFile(filename='bogus.glog', mode='rb', fileobj=StringIO(data))
             return gz.read()
+        elif ftype == 'zip':
+            z = zipfile.ZipFile(StringIO(data), 'r')
+            return z.read(z.namelist()[0])
+
         else:
             raise Exception('Unknown Decompression Scheme')
             
@@ -77,6 +96,7 @@ class GameLoader(object):
             file_start = f.read(self.max_len)
 
         ftype = self.determine_type(file_start)
+        print ftype
 
         output = ''
         if ftype != 'json':

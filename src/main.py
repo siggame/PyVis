@@ -69,7 +69,7 @@ def main():
     except:
         pass
 
-    loader = GameLoader()
+    loader = GameLoader(app)
 
     app.run(loader, args.glog)
 

@@ -1,7 +1,6 @@
 '''
 
 '''
-import json
 import bz2
 import gzip
 import zipfile
@@ -9,39 +8,23 @@ from cStringIO import StringIO
 
 import imp
 import config
-import os
 
 class GameLoader(object):
     '''
     GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs. 
     '''
-    def __init__(self):
+    def __init__(self, application):
         self.magic_dict = {
                 '\x1f\x8b\x08': 'gz',
                 '\x42\x5a\x68': 'bz2',
-                '\x50\x4b\x07': 'zip',
+                '\x50\x4b\x07': 'zip',  # Common zip magic numbers
                 '\x50\x4b\x05': 'zip',
                 '\x50\x4b\x04': 'zip',
                 '\x50\x4b\x03': 'zip',
                 }
 
         self.max_len = max(len(i) for i in self.magic_dict)
-
-    def load_glog(self, string):
-        '''
-        Loads a glog into memory.
-
-        :param string: The decompressed json string
-        :type string: string
-        '''
-        data = json.loads(string)
-
-        game_name = data['gameName'].lower()
-        path = os.path.join(config.PLUGIN_DIR, 
-                game_name, 'main.py')
-
-        game = imp.load_source(game_name, path)
-
+        self.application = application
 
     def determine_type(self, s):
         '''
@@ -72,14 +55,15 @@ class GameLoader(object):
         :rtype: string
         '''
         if ftype == 'bz2':
-            return bz2.decompress(data)
+            self.application.queue_log(bz2.decompress(data))
         elif ftype == 'gz':
-            gz = gzip.GzipFile(filename='bogus.glog', mode='rb', fileobj=StringIO(data))
-            return gz.read()
+            gz = gzip.GzipFile(filename='bogus.glog', mode='rb', 
+                    fileobj=StringIO(data))
+            self.application.queue_log(gz.read())
         elif ftype == 'zip':
             z = zipfile.ZipFile(StringIO(data), 'r')
-            return z.read(z.namelist()[0])
-
+            for f in z.namelist():
+                self.application.queue_log(z.read(f))
         else:
             raise Exception('Unknown Decompression Scheme')
             
@@ -102,12 +86,11 @@ class GameLoader(object):
         if ftype != 'json':
             with open(path, 'rb') as f:
                 output = f.read()
-            output = self.decompress(output, ftype)
+            self.decompress(output, ftype)
         else:
             with open(path, 'r') as f:
                 output = f.read()
-
-        self.load_glog(output)
+            self.application.queue_log(output)
 
     def loads(self, data):
         '''
@@ -120,7 +103,6 @@ class GameLoader(object):
         ftype = self.determine_type(data[:self.max_len])
 
         if ftype != json:
-            data = self.decompress(data, ftype)
-
-        self.load_glog(data)
-
+            self.decompress(data, ftype)
+        else:
+            self.application.queue_log(data)

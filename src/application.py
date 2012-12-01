@@ -3,6 +3,10 @@ The :mod:`application` module contains the Application class which builds the ga
 '''
 from pyglet.window import Window
 import pyglet
+import config
+import imp
+import json
+import os
 
 DEFAULT_WIDTH = 640
 DEFAULT_HEIGHT = 480
@@ -68,6 +72,17 @@ class Application(object):
 
         for order, procedure in self.updates:
             procedure()
+
+    def queue_log(self, data):
+        data = json.loads(data)
+
+        game_name = data['gameName'].lower()
+        path = os.path.join(config.PLUGIN_DIR, 
+                game_name, 'main.py')
+
+        print game_name, path
+
+        game = imp.load_source(game_name, path)
 
     def run(self, loader, glog_list):
         '''

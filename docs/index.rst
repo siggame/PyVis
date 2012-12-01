@@ -26,6 +26,8 @@ Core Stuff
     code/application.rst
     code/renderer.rst
     code/input.rst
+    code/gameloader.rst
+    code/timeline.rst
 
 Design Stuff
 ------------

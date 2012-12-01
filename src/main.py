@@ -1,5 +1,8 @@
+from __future__ import print_function
 from application import Application
 from renderer import Renderer
+from argparse import ArgumentParser
+from gameloader import GameLoader
 
 # Prohibit from main import *
 __all__ = []
@@ -40,7 +43,22 @@ class Test:
 
 
 def main():
-    app = Application()
+
+    parser = ArgumentParser(description=
+        'MegaMinerAI PyVis - Python Implementation of the Visualizer')
+    parser.add_argument('glog', type=str, nargs='*', 
+            help='Optional glogs to open in the visualizer.')
+    parser.add_argument('-f', dest='fullscreen', action='store_true', 
+            help='Start in fullscreen mode')
+    parser.add_argument('-a', dest='arena', metavar='server', type=str, nargs=1, 
+            help='Enables arena mode querying from the given url')
+    parser.add_argument('-s', dest='spectate', 
+            metavar=('server', 'gamenumber'), nargs=2, type=str, 
+            help='Spectates on gamenumber at server.')
+
+    args = parser.parse_args()
+
+    app = Application(fullscreen=args.fullscreen)
     renderer = Renderer()
     renderer.register_with_app(app)
     app.request_update_on_draw(Test(renderer).update)
@@ -51,7 +69,9 @@ def main():
     except:
         pass
 
-    app.run()
+    loader = GameLoader()
+
+    app.run(loader, args.glog)
 
 if __name__ == '__main__':
     main()

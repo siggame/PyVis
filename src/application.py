@@ -69,9 +69,15 @@ class Application(object):
         for order, procedure in self.updates:
             procedure()
 
-    def run(self):
+    def run(self, loader, glog_list):
         '''
         This method starts the 'game loop.'  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.
         '''
+
+        try:
+            loader.load(glog_list[0])
+        except IndexError:
+            pass
+
         pyglet.clock.schedule(self._update)
         pyglet.app.run()

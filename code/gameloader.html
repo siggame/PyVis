@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Game Loader &mdash; PyVis dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyVis dev documentation" href="../index.html" />
+    <link rel="next" title="5. Timeline" href="timeline.html" />
+    <link rel="prev" title="3. Input" href="input.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="timeline.html" title="5. Timeline"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="input.html" title="3. Input"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gameloader">
+<span id="game-loader"></span><h1>4. Game Loader<a class="headerlink" href="#module-gameloader" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="gameloader.GameLoader">
+<em class="property">class </em><tt class="descclassname">gameloader.</tt><tt class="descname">GameLoader</tt><a class="reference internal" href="../_modules/gameloader.html#GameLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs.</p>
+<dl class="method">
+<dt id="gameloader.GameLoader.decompress">
+<tt class="descname">decompress</tt><big>(</big><em>data</em>, <em>ftype</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.decompress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.decompress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decompresses the string based on the file type.  Returns decompressed string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Full compressed glog string</li>
+<li><strong>ftype</strong> &#8211; String representing the type of compression</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gameloader.GameLoader.determine_type">
+<tt class="descname">determine_type</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.determine_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.determine_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the type of glog by the first few characters of the glog.</p>
+<p>Returns &#8216;gz&#8217;, &#8216;bz2&#8217;, or &#8216;json&#8217; depending on the type of glog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; The first few characters of the glog</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gameloader.GameLoader.load">
+<tt class="descname">load</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading a glog from a file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Path to desired glog to load</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gameloader.GameLoader.load_glog">
+<tt class="descname">load_glog</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.load_glog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.load_glog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a glog into memory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; The decompressed json string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gameloader.GameLoader.loads">
+<tt class="descname">loads</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.loads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.loads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a glog from memory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Data for the glog (compressed or decompressed)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="input.html"
+                        title="previous chapter">3. Input</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="timeline.html"
+                        title="next chapter">5. Timeline</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/code/gameloader.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="timeline.html" title="5. Timeline"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="input.html" title="3. Input"
+             >previous</a> |</li>
+        <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Missouri S&amp;T - ACM SIG-Game,Maintained by Jacob Gardner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

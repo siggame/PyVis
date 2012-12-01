@@ -26,6 +26,8 @@ Core Stuff
     code/application.rst
     code/renderer.rst
     code/input.rst
+    code/gameloader.rst
+    code/timeline.rst
 
 Design Stuff
 ------------
@@ -50,6 +52,7 @@ Supplementary Information
     pyglet/index.rst
     pyglet/pyglet-drawing.rst
     opengl/index.rst
+    git/git-submodules.rst
 
 Indices and tables
 ==================

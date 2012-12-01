@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. Input &mdash; PyVis dev documentation</title>
+    <title>How Git Submodules Work &mdash; PyVis dev documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,8 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyVis dev documentation" href="../index.html" />
-    <link rel="next" title="4. Game Loader" href="gameloader.html" />
-    <link rel="prev" title="2. Renderer" href="renderer.html" /> 
+    <link rel="prev" title="Supplementary OpenGL Information" href="../opengl/index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,10 +39,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gameloader.html" title="4. Game Loader"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="renderer.html" title="2. Renderer"
+          <a href="../opengl/index.html" title="Supplementary OpenGL Information"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
       </ul>
@@ -54,21 +50,33 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-input">
-<span id="input"></span><h1>3. Input<a class="headerlink" href="#module-input" title="Permalink to this headline">¶</a></h1>
-<p>input</p>
-<dl class="class">
-<dt id="input.Input">
-<em class="property">class </em><tt class="descclassname">input.</tt><tt class="descname">Input</tt><big>(</big><em>application</em><big>)</big><a class="reference internal" href="../_modules/input.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input.Input" title="Permalink to this definition">¶</a></dt>
-<dd><p>input</p>
-<dl class="method">
-<dt id="input.Input.on_key_press">
-<tt class="descname">on_key_press</tt><big>(</big><em>symbol</em>, <em>modifiers</em><big>)</big><a class="reference internal" href="../_modules/input.html#Input.on_key_press"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input.Input.on_key_press" title="Permalink to this definition">¶</a></dt>
-<dd><p>docstring</p>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="how-git-submodules-work">
+<h1>How Git Submodules Work<a class="headerlink" href="#how-git-submodules-work" title="Permalink to this headline">¶</a></h1>
+<p>Git submodules are a semi-convenient way to nest git repositories.  PyVis will be using submodules as a way of isolating binary assets (e.g. textures, executables, etc.) from the core development repository.  Keeping binaries away from source code keeps the source code repository quick and easy to manage.</p>
+<div class="section" id="adding-a-submodule">
+<h2>Adding A Submodule<a class="headerlink" href="#adding-a-submodule" title="Permalink to this headline">¶</a></h2>
+<p>Adding a submodule is easy:</p>
+<div class="highlight-python"><pre>git submodule add -b submoduleBranch remote@address:of/submodule.git desired/submodule/path</pre>
+</div>
+</div>
+<div class="section" id="cloning-a-repository-with-a-submodule">
+<h2>Cloning a Repository With A Submodule<a class="headerlink" href="#cloning-a-repository-with-a-submodule" title="Permalink to this headline">¶</a></h2>
+<p>Also easy:</p>
+<div class="highlight-python"><pre>git clone remote@base:repository.git repo
+cd repo
+git submodule init
+git submodule update</pre>
+</div>
+</div>
+<div class="section" id="making-changes-in-a-submodule">
+<h2>Making Changes in a Submodule<a class="headerlink" href="#making-changes-in-a-submodule" title="Permalink to this headline">¶</a></h2>
+<p>You can use any git commands that you would in a normal git repo, but they all must occur in the submodule.</p>
+<p>The only thing that is different is that you also have to commit and push the new tip of the submodule for the base repo.  Otherwise, your base repo will still point to the old tip.  (It doesn&#8217;t have to be the tip.  As long as your submodule is at the commit you want to be checked out with your base repo when you commit it, then you&#8217;re good.)</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Make sure you always push your submodule or your base repo may point to a commit that doesn&#8217;t exist for anyone else, but you.</p>
+</div>
+</div>
 </div>
 
 
@@ -77,15 +85,22 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How Git Submodules Work</a><ul>
+<li><a class="reference internal" href="#adding-a-submodule">Adding A Submodule</a></li>
+<li><a class="reference internal" href="#cloning-a-repository-with-a-submodule">Cloning a Repository With A Submodule</a></li>
+<li><a class="reference internal" href="#making-changes-in-a-submodule">Making Changes in a Submodule</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="renderer.html"
-                        title="previous chapter">2. Renderer</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="gameloader.html"
-                        title="next chapter">4. Game Loader</a></p>
+  <p class="topless"><a href="../opengl/index.html"
+                        title="previous chapter">Supplementary OpenGL Information</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/code/input.txt"
+    <li><a href="../_sources/git/git-submodules.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -115,10 +130,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gameloader.html" title="4. Game Loader"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="renderer.html" title="2. Renderer"
+          <a href="../opengl/index.html" title="Supplementary OpenGL Information"
              >previous</a> |</li>
         <li><a href="../index.html">PyVis dev documentation</a> &raquo;</li> 
       </ul>

@@ -74,11 +74,19 @@ class Application(object):
             procedure()
 
     def queue_log(self, data):
+        '''
+        Queues a log to be played by the visualizer.
+
+        :param data: json gamelog string data
+        :type data: string
+        '''
         data = json.loads(data)
 
         game_name = data['gameName'].lower()
         path = os.path.join(config.PLUGIN_DIR, 
                 game_name, 'main.py')
+
+        self.log_queue += [data]
 
         print game_name, path
 

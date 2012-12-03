@@ -52,33 +52,31 @@
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">bz2</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="kn">import</span> <span class="nn">imp</span>
+<span class="kn">import</span> <span class="nn">config</span>
 
 <div class="viewcode-block" id="GameLoader"><a class="viewcode-back" href="../code/gameloader.html#gameloader.GameLoader">[docs]</a><span class="k">class</span> <span class="nc">GameLoader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">magic_dict</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s">&#39;</span><span class="se">\x1f\x8b\x08</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;gz&#39;</span><span class="p">,</span>
                 <span class="s">&#39;</span><span class="se">\x42\x5a\x68</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;bz2&#39;</span><span class="p">,</span>
-                <span class="c">#&#39;\x50\x4b\x04&#39;: &#39;zip&#39;,</span>
+                <span class="s">&#39;</span><span class="se">\x50\x4b\x07</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;zip&#39;</span><span class="p">,</span>  <span class="c"># Common zip magic numbers</span>
+                <span class="s">&#39;</span><span class="se">\x50\x4b\x05</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;zip&#39;</span><span class="p">,</span>
+                <span class="s">&#39;</span><span class="se">\x50\x4b\x04</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;zip&#39;</span><span class="p">,</span>
+                <span class="s">&#39;</span><span class="se">\x50\x4b\x03</span><span class="s">&#39;</span><span class="p">:</span> <span class="s">&#39;zip&#39;</span><span class="p">,</span>
                 <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">magic_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">application</span> <span class="o">=</span> <span class="n">application</span>
 
-<div class="viewcode-block" id="GameLoader.load_glog"><a class="viewcode-back" href="../code/gameloader.html#gameloader.GameLoader.load_glog">[docs]</a>    <span class="k">def</span> <span class="nf">load_glog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Loads a glog into memory.</span>
-
-<span class="sd">        :param string: The decompressed json string</span>
-<span class="sd">        :type string: string</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="GameLoader.determine_type"><a class="viewcode-back" href="../code/gameloader.html#gameloader.GameLoader.determine_type">[docs]</a>    <span class="k">def</span> <span class="nf">determine_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Determine the type of glog by the first few characters of the glog.</span>
@@ -108,10 +106,15 @@
 <span class="sd">        :rtype: string</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;bz2&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">bz2</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">queue_log</span><span class="p">(</span><span class="n">bz2</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;gz&#39;</span><span class="p">:</span>
-            <span class="n">gz</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;bogus.glog&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;rb&#39;</span><span class="p">,</span> <span class="n">fileobj</span><span class="o">=</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">gz</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">gz</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;bogus.glog&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;rb&#39;</span><span class="p">,</span> 
+                    <span class="n">fileobj</span><span class="o">=</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">queue_log</span><span class="p">(</span><span class="n">gz</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;zip&#39;</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">z</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">queue_log</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Unknown Decompression Scheme&#39;</span><span class="p">)</span>
             
@@ -128,17 +131,17 @@
             <span class="n">file_start</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">)</span>
 
         <span class="n">ftype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determine_type</span><span class="p">(</span><span class="n">file_start</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">ftype</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">ftype</span> <span class="o">!=</span> <span class="s">&#39;json&#39;</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">ftype</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">ftype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_glog</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">queue_log</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="GameLoader.loads"><a class="viewcode-back" href="../code/gameloader.html#gameloader.GameLoader.loads">[docs]</a>    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -151,10 +154,10 @@
         <span class="n">ftype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determine_type</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">ftype</span> <span class="o">!=</span> <span class="n">json</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ftype</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_glog</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ftype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">queue_log</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+</pre></div>
 
           </div>
         </div>

@@ -54,6 +54,11 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">from</span> <span class="nn">pyglet.window</span> <span class="kn">import</span> <span class="n">Window</span>
 <span class="kn">import</span> <span class="nn">pyglet</span>
+<span class="kn">import</span> <span class="nn">config</span>
+<span class="kn">import</span> <span class="nn">imp</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gameloader</span> 
 
 <span class="n">DEFAULT_WIDTH</span> <span class="o">=</span> <span class="mi">640</span>
 <span class="n">DEFAULT_HEIGHT</span> <span class="o">=</span> <span class="mi">480</span>
@@ -79,6 +84,10 @@
                 <span class="n">style</span><span class="o">=</span><span class="n">Window</span><span class="o">.</span><span class="n">WINDOW_STYLE_DEFAULT</span><span class="p">,</span> <span class="n">vsync</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                 <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">gameloader</span><span class="o">.</span><span class="n">GameLoader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_new_log</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_idx</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="Application.request_update_on_draw"><a class="viewcode-back" href="../code/application.html#application.Application.request_update_on_draw">[docs]</a>    <span class="k">def</span> <span class="nf">request_update_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procedure</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -104,6 +113,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">updates</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">order</span><span class="p">,</span> <span class="n">procedure</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updates</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </div>
+    <span class="k">def</span> <span class="nf">play_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">):</span>
+        <span class="n">game_name</span> <span class="o">=</span> <span class="n">log</span><span class="p">[</span><span class="s">&#39;gameName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">PLUGIN_DIR</span><span class="p">,</span> 
+                <span class="n">game_name</span><span class="p">,</span> <span class="s">&#39;main.py&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="n">game_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This function is called at the start of every loop in the &#39;game loop.&#39;</span>
@@ -117,13 +135,35 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_new_log</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">play_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">queue_idx</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
         <span class="k">for</span> <span class="n">order</span><span class="p">,</span> <span class="n">procedure</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">updates</span><span class="p">:</span>
             <span class="n">procedure</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Application.run"><a class="viewcode-back" href="../code/application.html#application.Application.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Application.queue_log"><a class="viewcode-back" href="../code/application.html#application.Application.queue_log">[docs]</a>    <span class="k">def</span> <span class="nf">queue_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Queues a log to be played by the visualizer.</span>
+
+<span class="sd">        :param data: json gamelog string data</span>
+<span class="sd">        :type data: string</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">game_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;gameName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span> <span class="o">+=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Application.run"><a class="viewcode-back" href="../code/application.html#application.Application.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">glog_list</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This method starts the &#39;game loop.&#39;  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">glog_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
         <span class="n">pyglet</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
         <span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div></div>
 </pre></div>

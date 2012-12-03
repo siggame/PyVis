@@ -7,6 +7,7 @@ import config
 import imp
 import json
 import os
+import gameloader 
 
 DEFAULT_WIDTH = 640
 DEFAULT_HEIGHT = 480
@@ -32,6 +33,10 @@ class Application(object):
                 style=Window.WINDOW_STYLE_DEFAULT, vsync=False, display=None,
                 context=None, config=None)
         self.updates = []
+        self.log_queue = []
+        self.loader = gameloader.GameLoader(self)
+        self.need_new_log = True
+        self.queue_idx = 0
 
     def request_update_on_draw(self, procedure, order=50):
         '''
@@ -57,6 +62,15 @@ class Application(object):
         self.updates += [(order, procedure)]
         self.updates.sort(key=lambda x: x[0])
 
+    def play_log(self, log):
+        game_name = log['gameName'].lower()
+        path = os.path.join(config.PLUGIN_DIR, 
+                game_name, 'main.py')
+
+        self.game = imp.load_source(game_name, path)
+
+        self.game.load(self, log)
+
     def _update(self, dt):
         '''
         This function is called at the start of every loop in the 'game loop.'
@@ -70,6 +84,10 @@ class Application(object):
 
         self.window.clear()
 
+        if self.need_new_log and self.queue_idx < len(self.log_queue):
+            self.play_log(self.log_queue[self.queue_idx])
+            self.queue_idx += 1
+
         for order, procedure in self.updates:
             procedure()
 
@@ -80,27 +98,20 @@ class Application(object):
         :param data: json gamelog string data
         :type data: string
         '''
+
         data = json.loads(data)
 
         game_name = data['gameName'].lower()
-        path = os.path.join(config.PLUGIN_DIR, 
-                game_name, 'main.py')
 
         self.log_queue += [data]
 
-        print game_name, path
-
-        game = imp.load_source(game_name, path)
-
-    def run(self, loader, glog_list):
+    def run(self, glog_list=[]):
         '''
         This method starts the 'game loop.'  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.
         '''
 
-        try:
-            loader.load(glog_list[0])
-        except IndexError:
-            pass
+        for l in glog_list:
+            self.loader.load(l)
 
         pyglet.clock.schedule(self._update)
         pyglet.app.run()

@@ -29,6 +29,8 @@ Core Stuff
     code/gameloader.rst
     code/timeline.rst
 
+`Coverage Report <http://siggame.github.com/PyVis/htmlcov>`_
+
 Design Stuff
 ------------
 

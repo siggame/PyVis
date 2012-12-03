@@ -49,6 +49,13 @@ if "%1" == "html" (
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished. The HTML pages are in %BUILDDIR%/html.
+	
+	mkdir _site\htmlcov
+	cd ..\src\tests
+	coverage run --branch main.py
+	coverage html
+	copy htmlcov ..\..\docs\_site\htmlcov\
+	cd ..\..\docs
 	goto end
 )
 

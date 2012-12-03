@@ -45,6 +45,12 @@ html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	
+	mkdir _site/htmlcov
+	cd ../src/tests
+	coverage run --branch main.py
+	coverage html
+	cp htmlcov ../../docs/_site/htmlcov/	
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml

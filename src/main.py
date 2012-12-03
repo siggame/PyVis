@@ -2,7 +2,6 @@ from __future__ import print_function
 from application import Application
 from renderer import Renderer
 from argparse import ArgumentParser
-from gameloader import GameLoader
 
 # Prohibit from main import *
 __all__ = []
@@ -69,9 +68,7 @@ def main():
     except:
         pass
 
-    loader = GameLoader(app)
-
-    app.run(loader, args.glog)
+    app.run(args.glog)
 
 if __name__ == '__main__':
     main()

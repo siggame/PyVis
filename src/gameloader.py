@@ -12,6 +12,10 @@ import config
 class GameLoader(object):
     '''
     GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs. 
+
+    .. warning:
+
+        There is a circular dependency between this and application.  Should be resolved
     '''
     def __init__(self, application):
         self.magic_dict = {
@@ -31,6 +35,10 @@ class GameLoader(object):
         Determine the type of glog by the first few characters of the glog.
 
         Returns 'gz', 'bz2', or 'json' depending on the type of glog.
+        'json' will be returned regardless of whehter the string is valid json or not.  
+        This function merely indicates whether or not a file is compressed or not.  
+        If the file is not compressed, it is assumed to be json.  It will be validated later.
+
 
         :param s: The first few characters of the glog
         :type s: string
@@ -80,7 +88,6 @@ class GameLoader(object):
             file_start = f.read(self.max_len)
 
         ftype = self.determine_type(file_start)
-        print ftype
 
         output = ''
         if ftype != 'json':
@@ -102,7 +109,7 @@ class GameLoader(object):
 
         ftype = self.determine_type(data[:self.max_len])
 
-        if ftype != json:
+        if ftype != 'json':
             self.decompress(data, ftype)
         else:
             self.application.queue_log(data)

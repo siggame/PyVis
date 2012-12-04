@@ -1,5 +1,5 @@
 import unittest
-from mock import patch, MagicMock
+from mock import patch, MagicMock, call
 import sys
 
 import application
@@ -20,6 +20,8 @@ class TestApplication(unittest.TestCase):
                 context=None, config=None)
 
         self.assertEqual(len(app.updates), 0)
+        self.assertTrue(app.need_new_log)
+        self.assertEqual(app.queue_idx, 0)
         loader.assert_called_once_with(app)
 
         app = application.Application()
@@ -29,7 +31,7 @@ class TestApplication(unittest.TestCase):
                 style=-24, vsync=False, display=None,
                 context=None, config=None)
 
-        loader.asser_called_once_with(app)
+        loader.assert_called_with(app)
 
     @patch('application.Window')
     def test_request_update_on_draw(self, mock_win):
@@ -46,8 +48,9 @@ class TestApplication(unittest.TestCase):
         self.assertListEqual(app.updates, 
                 [(-23, 'c'), (0, 'd'), (50, 'b'), (100, 'e')])
 
+    @patch('application.Application.play_log')
     @patch('application.Window')
-    def test_update(self, mock_win):
+    def test_update(self, mock_win, play_log):
         app = application.Application()
 
         func1, func2, func3 = MagicMock(), MagicMock(), MagicMock()
@@ -55,15 +58,75 @@ class TestApplication(unittest.TestCase):
         app._update(4)
         self.assertEqual(app.window.clear.call_count, 1)
 
+        # Make sure the functions start in an uncalled state
         for i in [func1, func2, func3]:
             self.assertFalse(i.called)
 
+        # add them to the update request list
         app.updates = [(0, func1), (24, func2), (85, func3)]
 
         app._update(5)
 
+        # Make sure all the functions have been called exactly once
         for i in [func1, func2, func3]:
             self.assertEqual(i.call_count, 1)
+
+        # Make sure no log has been played yet
+        self.assertFalse(play_log.called)
+        self.assertTrue(app.need_new_log)
+        self.assertEqual(app.queue_idx, 0)
+        self.assertEqual(len(app.log_queue), 0)
+
+        # Load up the log_queue simulating a file->open()
+        app.log_queue = ['logA', 'logB', 'logC']
+        app._update(5)
+        self.assertEqual(app.queue_idx, 1)
+        self.assertEqual(len(app.log_queue), 3)
+        self.assertTrue(play_log.called)
+
+        play_log.assert_called_once_with('logA')
+        app._update(2)
+        self.assertEqual(play_log.call_count, 2)
+        self.assertEqual(play_log.mock_calls[1], call('logB'))
+        self.assertEqual(app.queue_idx, 2)
+
+        app.need_new_log = False
+        app._update(1)
+        self.assertEqual(play_log.call_count, 2)
+        self.assertEqual(app.queue_idx, 2)
+
+        app.need_new_log = True
+        app._update(1)
+        self.assertEqual(play_log.call_count, 3)
+        self.assertEqual(play_log.mock_calls[2], call('logC'))
+        self.assertEqual(app.queue_idx, 3)
+
+        app._update(1)
+        self.assertEqual(play_log.call_count, 3)
+        self.assertEqual(app.queue_idx, 3)
+
+    @patch('os.path.join')
+    @patch('application.config')
+    @patch('imp.load_source')
+    @patch('application.Window')
+    def test_play_log(self, mock_win, load_source, config, path_join):
+        app = application.Application()
+
+        config.PLUGIN_DIR = 'dir1'
+        path_join.return_value = 'dir1/game1/main.py'
+
+        game = MagicMock()
+
+        load_source.return_value = game
+
+        log = {'gameName': 'GAME1'}
+        app.play_log(log)
+
+        path_join.assert_called_once_with('dir1', 'game1', 'main.py')
+
+        load_source.assert_called_once_with('game1', 'dir1/game1/main.py')
+
+        game.load.assert_called_once_with(app, {'gameName': 'GAME1'})
 
     @patch('application.json')
     @patch('application.Window')
@@ -101,5 +164,3 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(pyglet.clock.schedule.call_count, 2)
         self.assertEqual(pyglet.app.run.call_count, 2)
 
-if __name__ == '__main__':
-    unittest.main()

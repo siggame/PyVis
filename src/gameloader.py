@@ -13,7 +13,7 @@ class GameLoader(object):
     '''
     GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs. 
 
-    .. warning:
+    .. warning::
 
         There is a circular dependency between this and application.  Should be resolved
     '''

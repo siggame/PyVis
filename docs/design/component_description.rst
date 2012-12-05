@@ -4,6 +4,10 @@ Component Description
 This document shall serve as a high-level overview of what each component of 
 the visualizer architecture shall be responsible for.
 
+.. image:: overview.svg
+    :width: 450 px
+    :align: center
+
 UI
 --
 The UI contains :doc:`Widgets </design/widgets>` which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn't know what to do.

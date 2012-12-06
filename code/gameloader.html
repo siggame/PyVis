@@ -60,6 +60,10 @@
 <dt id="gameloader.GameLoader">
 <em class="property">class </em><tt class="descclassname">gameloader.</tt><tt class="descname">GameLoader</tt><big>(</big><em>application</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>GameLoader automatically finds the correct plugin for a glog.  Accepts decompressed gamelogs and bz2 and gziped glogs.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">There is a circular dependency between this and application.  Should be resolved</p>
+</div>
 <dl class="method">
 <dt id="gameloader.GameLoader.decompress">
 <tt class="descname">decompress</tt><big>(</big><em>data</em>, <em>ftype</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.decompress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.decompress" title="Permalink to this definition">¶</a></dt>
@@ -85,7 +89,10 @@
 <dt id="gameloader.GameLoader.determine_type">
 <tt class="descname">determine_type</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../_modules/gameloader.html#GameLoader.determine_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameloader.GameLoader.determine_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the type of glog by the first few characters of the glog.</p>
-<p>Returns &#8216;gz&#8217;, &#8216;bz2&#8217;, or &#8216;json&#8217; depending on the type of glog.</p>
+<p>Returns &#8216;gz&#8217;, &#8216;bz2&#8217;, or &#8216;json&#8217; depending on the type of glog.
+&#8216;json&#8217; will be returned regardless of whehter the string is valid json or not.  
+This function merely indicates whether or not a file is compressed or not.  
+If the file is not compressed, it is assumed to be json.  It will be validated later.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="PyVis dev documentation" href="../index.html" />
-    <link rel="next" title="Component Description" href="component_description.html" />
+    <link rel="next" title="Visualizer Architecture Overview" href="component_description.html" />
     <link rel="prev" title="5. Timeline" href="../code/timeline.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="component_description.html" title="Component Description"
+          <a href="component_description.html" title="Visualizer Architecture Overview"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../code/timeline.html" title="5. Timeline"
@@ -70,6 +70,15 @@
 <dd>This mode is a theoretical mode that is a mixture of Unit-Mode and Normal-Mode.  Object movement is lagged to some extent based on when commands occurred, but there is still a fair amount of simultaneous moves occurring.  This mode may be useful for quick debugging by inspection, but still showing the overall flow of the game.</dd>
 </dl>
 </div>
+<div class="section" id="misc">
+<h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-interaction">Interaction</dt>
+<dd>This word is mainly reserved for an object animation&#8217;s dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.</dd>
+<dt id="term-condense-r">Condense(r)</dt>
+<dd>The condenser will condense turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.</dd>
+</dl>
+</div>
 </div>
 
 
@@ -82,6 +91,7 @@
   <ul>
 <li><a class="reference internal" href="#">Visualizer Nomenclature</a><ul>
 <li><a class="reference internal" href="#gameplay-modes">Gameplay Modes</a></li>
+<li><a class="reference internal" href="#misc">Misc</a></li>
 </ul>
 </li>
 </ul>
@@ -91,7 +101,7 @@
                         title="previous chapter">5. Timeline</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="component_description.html"
-                        title="next chapter">Component Description</a></p>
+                        title="next chapter">Visualizer Architecture Overview</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/design/nomenclature.txt"
@@ -124,7 +134,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="component_description.html" title="Component Description"
+          <a href="component_description.html" title="Visualizer Architecture Overview"
              >next</a> |</li>
         <li class="right" >
           <a href="../code/timeline.html" title="5. Timeline"

@@ -19,3 +19,14 @@ Gameplay Modes
 
     Liquid-Mode
         This mode is a theoretical mode that is a mixture of Unit-Mode and Normal-Mode.  Object movement is lagged to some extent based on when commands occurred, but there is still a fair amount of simultaneous moves occurring.  This mode may be useful for quick debugging by inspection, but still showing the overall flow of the game.
+
+Misc
+----
+
+.. glossary::
+
+    Interaction
+        This word is mainly reserved for an object animation's dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.
+
+    Condense(r)
+        The condenser will condense turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.

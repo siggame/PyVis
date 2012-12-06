@@ -1,8 +1,12 @@
-Component Description
-=====================
+Visualizer Architecture Overview
+================================
 
 This document shall serve as a high-level overview of what each component of 
 the visualizer architecture shall be responsible for.
+
+.. image:: overview.svg
+    :width: 550 px
+    :align: center
 
 UI
 --
@@ -10,15 +14,27 @@ The UI contains :doc:`Widgets </design/widgets>` which are objects just like in 
 
 Timeline
 --------
-The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be reponsible for presenting information in the most accurate way possible given the desired playback format. Playback formats shall be one of several possible modes:
+The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be reponsible for presenting information in the most accurate way possible given the desired playback format.
 
-* Unit Mode - This is a first class citizen of the timeline and should be the easiest to draw.  This should show units moving and performing actions one at a time and should have a properly ordered 1-1 correlation with the commands sent from each client.  Competitors should be spending about 10% of their time in this mode.
+See the :doc:`nomenclature </design/nomenclature>` page for details on the different playback modes.
 
-* Normal Mode - This mode is where competitors should be spending about 90% of their time in this mode.  While not entirely accurate, the information displayed in this mode should be as accurate as possible given that almost all units will be moving at once.  Objects that do not interact with each other in any way should perform their actions simulaneously.  Objects that interact with each other should be appropriately animated such that the displayed information shows the object state dependence on actions.  
+The initial timeline implementation plans are as follows:
 
-* Condensed Mode - Condensed mode is similar to normal mode except that two turns are animated at the same time instead of just one in normal mode.  This will probably not be used much and should probably be an afterthought.  
-  
-* Liquid Mode - This is a theoretical mode between unit and normal mode where units begin their movement slightly lagging behind other units showing the order of actions, but not entirely blocking everything else. 
+There will be a list of "tracks" which will contain all the objects that are to be drawn to the screen.  Each track object will have a start time and an end time.  Each object will be initialized as taking up a certain percentage of track time and there will be no conflicts with that object::
+    
+    Each arrow denotes a different animation associated with a track.
+    +-------+-------------------------------------------------------+
+    |Tracks |                     Timeline                          |
+    +-------+-------------------------------------------------------+
+     Track A |--->              --->|   >> -->          --->|     ---
+     Track B |    -->->>            |     >   ----->        |---->
+     Track C |          ->->>-->    |-->            --->    |
+             |                      |                       |
+     Tags   Turn 1                 Turn 2                 Debug 
+
+The timeline will store a list of tags.  The most common tag will be a 'turn tag' which represents the end of one turn and start of another.  Each animation will specify what objects it "interacts" with.  
+
+If the timeline is in any mode other than 'unit-mode', it will then begin to try to condense areas of the timeline between tags depending on the mode.  A debug tag will denote a universal interaction.  All states must be at the point where they were on the server when the debug tag was inserted.
 
 Renderer
 --------
@@ -40,11 +56,18 @@ Inputs that should be sent are:
 
 * Voice Commands :|
 
-Controller
-----------
-This shall tell the timeline where it should currently be, and handle a few other general things in the system.  The config module should primarily be used by this.
-
 Networking
 ----------
-Shall support spectating.  More details to follow.
+This module shall provide the ability to read incoming packet information and append it to the timeline.  Should dispatch 'new_turn' events to be sent to the current plugin.  This will also do the AMQP processing to get glogs from the arena and deal with them.
 
+ED The Event Dispatcher
+-----------------------
+Essentially any messages that need to be transmitted across modules will be sent to this.  This removes the need for circular dependencies in some cases.  Loading a gamelog, for example, can happen at the UI level (file->open), command line (python main.py glog_name.glog), or from the arena (beanstalk consuming).  Any of these can dispatch a "load_glog" event while one callback will consume those messages and deal with them.
+
+Game Loader
+-----------
+This module is responsible for decompressing glogs, acquiring their plugin, and dispatching the decompressed data along with the plugin to be consumed by the application. 
+
+Config Module
+-------------
+This module will provide a globally accessible place for updating and setting configuration for the visualizer.  It will optionally trigger events on setting changes.

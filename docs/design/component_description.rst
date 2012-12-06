@@ -5,7 +5,7 @@ This document shall serve as a high-level overview of what each component of
 the visualizer architecture shall be responsible for.
 
 .. image:: overview.svg
-    :width: 450 px
+    :width: 550 px
     :align: center
 
 UI

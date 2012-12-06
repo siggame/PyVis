@@ -59,9 +59,13 @@
 <p>This document shall serve as a high-level overview of what each component of
 the visualizer architecture shall be responsible for.</p>
 <div align="center" class="align-center"><img src="../_images/overview.svg" width="550px" /></div>
-<div class="section" id="ui">
-<h2>UI<a class="headerlink" href="#ui" title="Permalink to this headline">¶</a></h2>
-<p>The UI contains <a class="reference internal" href="widgets.html"><em>Widgets</em></a> which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn&#8217;t know what to do.</p>
+<div class="section" id="plugin">
+<h2>Plugin<a class="headerlink" href="#plugin" title="Permalink to this headline">¶</a></h2>
+<p>Game-specific functionality is implemented in these.  I don&#8217;t have anything more to say on that.  It&#8217;s pretty self-explanatory.</p>
+</div>
+<div class="section" id="application">
+<h2>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h2>
+<p>This is the container for all the components below the application.  It manages game logs to some extent.  The application acts similarly to how plugins will act except that it contains the core features that are common to all plugins.</p>
 </div>
 <div class="section" id="timeline">
 <h2>Timeline<a class="headerlink" href="#timeline" title="Permalink to this headline">¶</a></h2>
@@ -81,6 +85,11 @@ the visualizer architecture shall be responsible for.</p>
 </div>
 <p>The timeline will store a list of tags.  The most common tag will be a &#8216;turn tag&#8217; which represents the end of one turn and start of another.  Each animation will specify what objects it &#8220;interacts&#8221; with.</p>
 <p>If the timeline is in any mode other than &#8216;unit-mode&#8217;, it will then begin to try to condense areas of the timeline between tags depending on the mode.  A debug tag will denote a universal interaction.  All states must be at the point where they were on the server when the debug tag was inserted.</p>
+<p>The timeline exists inside a virtual window inside the UI at the lowest level meaning it only responds to inputs in all the higher-level windows have failed to.</p>
+</div>
+<div class="section" id="ui">
+<h2>UI<a class="headerlink" href="#ui" title="Permalink to this headline">¶</a></h2>
+<p>The UI contains <a class="reference internal" href="widgets.html"><em>Widgets</em></a> which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn&#8217;t know what to do.</p>
 </div>
 <div class="section" id="renderer">
 <h2>Renderer<a class="headerlink" href="#renderer" title="Permalink to this headline">¶</a></h2>
@@ -114,6 +123,10 @@ the visualizer architecture shall be responsible for.</p>
 <h2>Config Module<a class="headerlink" href="#config-module" title="Permalink to this headline">¶</a></h2>
 <p>This module will provide a globally accessible place for updating and setting configuration for the visualizer.  It will optionally trigger events on setting changes.</p>
 </div>
+<div class="section" id="arena-controller">
+<h2>Arena Controller<a class="headerlink" href="#arena-controller" title="Permalink to this headline">¶</a></h2>
+<p>The main purpose of this module is to pull games from the AMQP server to display automagically.</p>
+</div>
 </div>
 
 
@@ -125,14 +138,17 @@ the visualizer architecture shall be responsible for.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Visualizer Architecture Overview</a><ul>
-<li><a class="reference internal" href="#ui">UI</a></li>
+<li><a class="reference internal" href="#plugin">Plugin</a></li>
+<li><a class="reference internal" href="#application">Application</a></li>
 <li><a class="reference internal" href="#timeline">Timeline</a></li>
+<li><a class="reference internal" href="#ui">UI</a></li>
 <li><a class="reference internal" href="#renderer">Renderer</a></li>
 <li><a class="reference internal" href="#input">Input</a></li>
 <li><a class="reference internal" href="#networking">Networking</a></li>
 <li><a class="reference internal" href="#ed-the-event-dispatcher">ED The Event Dispatcher</a></li>
 <li><a class="reference internal" href="#game-loader">Game Loader</a></li>
 <li><a class="reference internal" href="#config-module">Config Module</a></li>
+<li><a class="reference internal" href="#arena-controller">Arena Controller</a></li>
 </ul>
 </li>
 </ul>

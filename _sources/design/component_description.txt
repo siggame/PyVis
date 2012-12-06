@@ -8,9 +8,13 @@ the visualizer architecture shall be responsible for.
     :width: 550 px
     :align: center
 
-UI
---
-The UI contains :doc:`Widgets </design/widgets>` which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn't know what to do.
+Plugin
+------
+Game-specific functionality is implemented in these.  I don't have anything more to say on that.  It's pretty self-explanatory.
+
+Application
+-----------
+This is the container for all the components below the application.  It manages game logs to some extent.  The application acts similarly to how plugins will act except that it contains the core features that are common to all plugins.
 
 Timeline
 --------
@@ -35,6 +39,12 @@ There will be a list of "tracks" which will contain all the objects that are to 
 The timeline will store a list of tags.  The most common tag will be a 'turn tag' which represents the end of one turn and start of another.  Each animation will specify what objects it "interacts" with.  
 
 If the timeline is in any mode other than 'unit-mode', it will then begin to try to condense areas of the timeline between tags depending on the mode.  A debug tag will denote a universal interaction.  All states must be at the point where they were on the server when the debug tag was inserted.
+
+The timeline exists inside a virtual window inside the UI at the lowest level meaning it only responds to inputs in all the higher-level windows have failed to.
+
+UI
+--
+The UI contains :doc:`Widgets </design/widgets>` which are objects just like in the Timeline. Widgets contain a set of procedures expected in the UI.  The UI should draw all the objects it contains, and send appropriate inputs to the objects.  Individual objects should contain the logic to handle clicks, hovers, drags (not the queen-style), etc.  If no widget responds to the input, the UI should tell the input system it didn't know what to do.
 
 Renderer
 --------
@@ -71,3 +81,7 @@ This module is responsible for decompressing glogs, acquiring their plugin, and 
 Config Module
 -------------
 This module will provide a globally accessible place for updating and setting configuration for the visualizer.  It will optionally trigger events on setting changes.
+
+Arena Controller
+----------------
+The main purpose of this module is to pull games from the AMQP server to display automagically.  

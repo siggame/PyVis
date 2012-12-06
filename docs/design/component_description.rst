@@ -34,7 +34,7 @@ There will be a list of "tracks" which will contain all the objects that are to 
      Track B |    -->->>            |     >   ----->        |---->
      Track C |          ->->>-->    |-->            --->    |
              |                      |                       |
-     Tags   Turn 1                 Turn 2                 Debug 
+     Tags   Turn 1                 Turn 2                  Debug 
 
 The timeline will store a list of tags.  The most common tag will be a 'turn tag' which represents the end of one turn and start of another.  Each animation will specify what objects it "interacts" with.  
 

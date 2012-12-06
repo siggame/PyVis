@@ -1,3 +1,4 @@
+#!/bin/env python
 from __future__ import print_function
 from application import Application
 from renderer import Renderer
@@ -58,6 +59,7 @@ def main():
     args = parser.parse_args()
 
     app = Application(fullscreen=args.fullscreen)
+    '''
     renderer = Renderer()
     renderer.register_with_app(app)
     app.request_update_on_draw(Test(renderer).update)
@@ -67,6 +69,7 @@ def main():
         r = Renderer.Rectangle(40, 40, 20, 30)
     except:
         pass
+    '''
 
     app.run(args.glog)
 

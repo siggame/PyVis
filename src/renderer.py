@@ -86,22 +86,6 @@ class Renderer(object):
             if hasattr(cls, '__mro__') and Primitive in cls.__mro__:
                 setattr(self, name, type(name, (cls,), dict(renderer=self)))
 
-    def register_with_app(self, app):
-        '''
-        This method automagically sets up the requests from the application.  
-        It is equivalent to::
-
-            app.request_update_on_draw(renderer.init_frame, 0)
-            app.request_update_on_draw(renderer.draw_frame, 100)
-        
-        :param app: application to register with
-        :type app: :class:`application.Application`
-        :rtype: None
-            
-        '''
-        app.request_update_on_draw(self.init_frame, 0)
-        app.request_update_on_draw(self.draw_frame, 100)
-
 
     def init_frame(self):
         '''

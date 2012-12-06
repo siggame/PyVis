@@ -3,11 +3,13 @@ The :mod:`application` module contains the Application class which builds the ga
 '''
 from pyglet.window import Window
 import pyglet
-import config
 import imp
-import json
 import os
+
+import config
 import gameloader 
+import renderer
+from eventdispatcher import EventDispatcher, event_handler
 
 DEFAULT_WIDTH = 640
 DEFAULT_HEIGHT = 480
@@ -33,10 +35,34 @@ class Application(object):
                 style=Window.WINDOW_STYLE_DEFAULT, vsync=False, display=None,
                 context=None, config=None)
         self.updates = []
-        self.log_queue = []
-        self.loader = gameloader.GameLoader(self)
-        self.need_new_log = True
-        self.queue_idx = 0
+
+        # Set up the event dispatcher
+        self.ed = EventDispatcher()
+        self.ed.register_class_for_events(self)
+
+        # Build the game loader
+        self.loader = gameloader.GameLoader(self.ed)
+
+        #Build the renderer
+        self.renderer = renderer.Renderer()
+        
+        # Request updates
+        self.request_update_on_draw(self.renderer.init_frame, 0)
+        self.request_update_on_draw(self.renderer.draw_frame, 100)
+
+
+    @event_handler
+    def on_run_gamelog(self, data):
+        print('handler')
+        game_name = data['gameName'].lower()
+        path = os.path.join(config.PLUGIN_DIR, 
+                game_name, 'main.py')
+
+        self.game = imp.load_source(game_name, path)
+        self.game.load(self, data)
+
+        return True
+
 
     def request_update_on_draw(self, procedure, order=50):
         '''
@@ -62,15 +88,6 @@ class Application(object):
         self.updates += [(order, procedure)]
         self.updates.sort(key=lambda x: x[0])
 
-    def play_log(self, log):
-        game_name = log['gameName'].lower()
-        path = os.path.join(config.PLUGIN_DIR, 
-                game_name, 'main.py')
-
-        self.game = imp.load_source(game_name, path)
-
-        self.game.load(self, log)
-
     def _update(self, dt):
         '''
         This function is called at the start of every loop in the 'game loop.'
@@ -84,34 +101,21 @@ class Application(object):
 
         self.window.clear()
 
+        '''
         if self.need_new_log and self.queue_idx < len(self.log_queue):
             self.play_log(self.log_queue[self.queue_idx])
             self.queue_idx += 1
+        '''
 
         for order, procedure in self.updates:
             procedure()
-
-    def queue_log(self, data):
-        '''
-        Queues a log to be played by the visualizer.
-
-        :param data: json gamelog string data
-        :type data: string
-        '''
-
-        data = json.loads(data)
-
-        game_name = data['gameName'].lower()
-
-        self.log_queue += [data]
 
     def run(self, glog_list=[]):
         '''
         This method starts the 'game loop.'  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.
         '''
 
-        for l in glog_list:
-            self.loader.load(l)
+        self.ed.dispatch_event('on_load_gamelog_file', glog_list)
 
         pyglet.clock.schedule(self._update)
         pyglet.app.run()

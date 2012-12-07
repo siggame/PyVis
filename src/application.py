@@ -101,12 +101,6 @@ class Application(object):
 
         self.window.clear()
 
-        '''
-        if self.need_new_log and self.queue_idx < len(self.log_queue):
-            self.play_log(self.log_queue[self.queue_idx])
-            self.queue_idx += 1
-        '''
-
         for order, procedure in self.updates:
             procedure()
 

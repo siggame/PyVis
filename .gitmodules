@@ -1,3 +1,6 @@
 [submodule "docs/_site"]
 	path = docs/_site
 	url = https://github.com/siggame/PyVis.git
+[submodule "assets"]
+	path = assets
+	url = https://github.com/siggame/VisAssets.git

@@ -1,3 +1,0 @@
-[submodule "docs/_site"]
-	path = docs/_site
-	url = https://github.com/siggame/PyVis.git

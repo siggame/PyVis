@@ -9,3 +9,7 @@ For requirements, please run from the root directory:
 
     pip install -r requirements.txt 
 
+To get the submodules for this project (if so desired):
+
+    git submodule init && git submodule update
+

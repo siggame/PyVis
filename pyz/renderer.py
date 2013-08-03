@@ -158,7 +158,7 @@ class Renderer(object):
             if not color:
                 color = self.renderer.fg_color
 
-            data = [('v2f', (0, 0, 0, 0, 0, 0, 0, 0)),
+            data = [('v2f', (0,) * 8),
                 ('c4f',
                     (color) * 4)]
 
@@ -184,8 +184,22 @@ class Renderer(object):
 
             self.move(x, y)
 
-
         def move(self, x, y):
+            '''
+            This move method actually modifies the vertex lists to update the positions of the polygons.  This is most efficient when in unit-mode where only one unit is moving at a time.
+
+            This is because at this point very few objects are moving per frame. So all objects that have not moved take up zero cpu time.
+
+            This may not be as efficient when applied to normal, condensed, or liquid mode because far more polygons will be moving at the same time.  It may be better to draw each vertex list separately after having gone through a matrix transformation.
+
+            As a final note, it may be best to move these primitives into a class built in cython so that python doesn't have to deal with all this bullshit processing.
+
+            :param x: The new x position.
+            :type x: float or int
+
+            :param y: The new y position.
+            :type y: float or int.
+            '''
             self._x = x
             self._y = y
             self.vertex_lists['rect'].vertices[:] = [

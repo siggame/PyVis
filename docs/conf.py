@@ -14,7 +14,7 @@
 import sys
 import os
 
-sys.path += [os.path.join('..', 'src')]
+sys.path += [os.path.join('..', 'pyz')]
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -29,11 +29,11 @@ sys.path += [os.path.join('..', 'src')]
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'sphinx.ext.autodoc', 
-    'sphinx.ext.intersphinx', 
-    'sphinx.ext.todo', 
-    'sphinx.ext.coverage', 
-    'sphinx.ext.ifconfig', 
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     ]
 
@@ -53,7 +53,7 @@ master_doc = 'index'
 project = u'PyVis'
 copyright = u'2012, ' \
     u'Missouri S&T - ACM SIG-Game,' \
-    u'Maintained by Jacob Gardner' 
+    u'Maintained by Jacob Gardner'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -90,7 +90,7 @@ exclude_patterns = ['_build']
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-show_authors = True 
+show_authors = True
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -103,7 +103,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

@@ -36,10 +36,9 @@ class Test:
                 self.batches += [renderer.Rectangle(x * 10, y * 10, 10, 10)]
 
     def update(self):
-        '''
         for b in self.batches:
-            b.draw()
-        '''
+            b.x += 1
+        #    b.draw()
 
 
 def main():
@@ -59,6 +58,9 @@ def main():
     args = parser.parse_args()
 
     app = Application(fullscreen=args.fullscreen)
+
+    app.request_update_on_draw(Test(app.renderer).update)
+
     '''
     renderer = Renderer()
     renderer.register_with_app(app)

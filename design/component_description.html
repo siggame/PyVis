@@ -37,9 +37,6 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="widgets.html" title="Widgets"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -69,7 +66,7 @@ the visualizer architecture shall be responsible for.</p>
 </div>
 <div class="section" id="timeline">
 <h2>Timeline<a class="headerlink" href="#timeline" title="Permalink to this headline">¶</a></h2>
-<p>The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be reponsible for presenting information in the most accurate way possible given the desired playback format.</p>
+<p>The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be responsible for presenting information in the most accurate way possible given the desired playback format.</p>
 <p>See the <a class="reference internal" href="nomenclature.html"><em>nomenclature</em></a> page for details on the different playback modes.</p>
 <p>The initial timeline implementation plans are as follows:</p>
 <p>There will be a list of &#8220;tracks&#8221; which will contain all the objects that are to be drawn to the screen.  Each track object will have a start time and an end time.  Each object will be initialized as taking up a certain percentage of track time and there will be no conflicts with that object:</p>
@@ -81,7 +78,7 @@ the visualizer architecture shall be responsible for.</p>
  Track B |    --&gt;-&gt;&gt;            |     &gt;   -----&gt;        |----&gt;
  Track C |          -&gt;-&gt;&gt;--&gt;    |--&gt;            ---&gt;    |
          |                      |                       |
- Tags   Turn 1                 Turn 2                 Debug</pre>
+ Tags   Turn 1                 Turn 2                  Debug</pre>
 </div>
 <p>The timeline will store a list of tags.  The most common tag will be a &#8216;turn tag&#8217; which represents the end of one turn and start of another.  Each animation will specify what objects it &#8220;interacts&#8221; with.</p>
 <p>If the timeline is in any mode other than &#8216;unit-mode&#8217;, it will then begin to try to condense areas of the timeline between tags depending on the mode.  A debug tag will denote a universal interaction.  All states must be at the point where they were on the server when the debug tag was inserted.</p>
@@ -109,7 +106,11 @@ the visualizer architecture shall be responsible for.</p>
 </div>
 <div class="section" id="networking">
 <h2>Networking<a class="headerlink" href="#networking" title="Permalink to this headline">¶</a></h2>
-<p>This module shall provide the ability to read incoming packet information and append it to the timeline.  Should dispatch &#8216;new_turn&#8217; events to be sent to the current plugin.  This will also do the AMQP processing to get glogs from the arena and deal with them.</p>
+<p>This module shall provide the ability to read incoming packet information and append it to the timeline.  Should dispatch &#8216;new_turn&#8217; events to be sent to the current plugin.</p>
+</div>
+<div class="section" id="arena-controller">
+<h2>Arena Controller<a class="headerlink" href="#arena-controller" title="Permalink to this headline">¶</a></h2>
+<p>The arena controller will automatically trigger events for the visualizer in lieu of user input.  This means monitoring the AMQP server for new glogs to display, displaying glogs appropriately, etc.</p>
 </div>
 <div class="section" id="ed-the-event-dispatcher">
 <h2>ED The Event Dispatcher<a class="headerlink" href="#ed-the-event-dispatcher" title="Permalink to this headline">¶</a></h2>
@@ -123,8 +124,8 @@ the visualizer architecture shall be responsible for.</p>
 <h2>Config Module<a class="headerlink" href="#config-module" title="Permalink to this headline">¶</a></h2>
 <p>This module will provide a globally accessible place for updating and setting configuration for the visualizer.  It will optionally trigger events on setting changes.</p>
 </div>
-<div class="section" id="arena-controller">
-<h2>Arena Controller<a class="headerlink" href="#arena-controller" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h2>Arena Controller<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>The main purpose of this module is to pull games from the AMQP server to display automagically.</p>
 </div>
 </div>
@@ -145,10 +146,11 @@ the visualizer architecture shall be responsible for.</p>
 <li><a class="reference internal" href="#renderer">Renderer</a></li>
 <li><a class="reference internal" href="#input">Input</a></li>
 <li><a class="reference internal" href="#networking">Networking</a></li>
+<li><a class="reference internal" href="#arena-controller">Arena Controller</a></li>
 <li><a class="reference internal" href="#ed-the-event-dispatcher">ED The Event Dispatcher</a></li>
 <li><a class="reference internal" href="#game-loader">Game Loader</a></li>
 <li><a class="reference internal" href="#config-module">Config Module</a></li>
-<li><a class="reference internal" href="#arena-controller">Arena Controller</a></li>
+<li><a class="reference internal" href="#id1">Arena Controller</a></li>
 </ul>
 </li>
 </ul>
@@ -187,9 +189,6 @@ the visualizer architecture shall be responsible for.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="widgets.html" title="Widgets"
              >next</a> |</li>

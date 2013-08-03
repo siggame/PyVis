@@ -37,9 +37,6 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="component_description.html" title="Visualizer Architecture Overview"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -74,9 +71,11 @@
 <h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
 <dl class="glossary docutils">
 <dt id="term-interaction">Interaction</dt>
-<dd>This word is mainly reserved for an object animation&#8217;s dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.</dd>
+<dd>This word, when used in the context of the timeline, is reserved for an object animation&#8217;s dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.</dd>
 <dt id="term-condense-r">Condense(r)</dt>
-<dd>The condenser will condense turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.</dd>
+<dd>This is a component of the timeline. The condenser will &#8220;condense&#8221; turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.  It tries its best to make normal-mode accurate and fast.</dd>
+<dt id="term-tag">Tag</dt>
+<dd>An element of the timeline which specifies a &#8220;special&#8221; point on timeline.  A tag can be a turn number, break point, bookmark, etc.</dd>
 </dl>
 </div>
 </div>
@@ -130,9 +129,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="component_description.html" title="Visualizer Architecture Overview"
              >next</a> |</li>

@@ -37,9 +37,6 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="renderer.html" title="2. Renderer"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -54,76 +51,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-application">
-<span id="application"></span><h1>1. Application<a class="headerlink" href="#module-application" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="#module-application" title="application"><tt class="xref py py-mod docutils literal"><span class="pre">application</span></tt></a> module contains the Application class which builds the game window and starts calling functions in all the modules.</p>
-<dl class="class">
-<dt id="application.Application">
-<em class="property">class </em><tt class="descclassname">application.</tt><tt class="descname">Application</tt><big>(</big><em>size=(640</em>, <em>480)</em>, <em>title='MegaMinerAI Bland Title Text'</em>, <em>fullscreen=False</em><big>)</big><a class="reference internal" href="../_modules/application.html#Application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.Application" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class creates a window with an OpenGL context, and contains hooks for components to call to request updates as apart of the &#8216;game loop.&#8217;</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>size</strong> (<em>2-tuple of integers</em>) &#8211; is a tuple representing the default size of the window (width, height).</li>
-<li><strong>title</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; is the title text at the top of the window.</li>
-<li><strong>fullscreen</strong> (<em>boolean</em>) &#8211; tells the window to start fullscren or not.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="application.Application.queue_log">
-<tt class="descname">queue_log</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/application.html#Application.queue_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.Application.queue_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Queues a log to be played by the visualizer.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) &#8211; json gamelog string data</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="application.Application.request_update_on_draw">
-<tt class="descname">request_update_on_draw</tt><big>(</big><em>procedure</em>, <em>order=50</em><big>)</big><a class="reference internal" href="../_modules/application.html#Application.request_update_on_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.Application.request_update_on_draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method tells the application that whenever a draw occurs for the application, that <em>procedure</em> should be called.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>order</strong> (<em>float or integer</em>) &#8211; specifies when <em>procedure</em> should be called.  All procedures with the same <em>order</em> will execute in a semi-random fashion after the previous <em>order</em> and before the next <em>order</em> value in the update queue.  In general, all procedures should be called sometime before the <a class="reference internal" href="renderer.html#module-renderer" title="renderer"><tt class="xref py py-mod docutils literal"><span class="pre">renderer</span></tt></a>&#8216;s update() function is called.  Procedures will be called with <em>order</em> from least to greatest.</li>
-<li><strong>procedure</strong> (<em>function or class method</em>) &#8211; should not expect any arguments or an exception will be thrown.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Example gameloop:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">update_objects</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">do_input_stuff</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">render_frame</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="go">&#39;processing user input&#39;</span>
-<span class="go">&#39;updating game objects&#39;</span>
-<span class="go">&#39;rendering frame&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="application.Application.run">
-<tt class="descname">run</tt><big>(</big><em>glog_list=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="../_modules/application.html#Application.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.Application.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method starts the &#8216;game loop.&#8217;  It is a blocking function so at this, point all modules should have requested updates from the application or another thread should have been started.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="application">
+<h1>1. Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -166,9 +95,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="renderer.html" title="2. Renderer"
              >next</a> |</li>

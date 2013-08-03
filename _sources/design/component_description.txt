@@ -18,7 +18,7 @@ This is the container for all the components below the application.  It manages 
 
 Timeline
 --------
-The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be reponsible for presenting information in the most accurate way possible given the desired playback format.
+The timeline is responsible for telling what to draw, when and under what state. This is the backbone of the visualizer and will be responsible for presenting information in the most accurate way possible given the desired playback format.
 
 See the :doc:`nomenclature </design/nomenclature>` page for details on the different playback modes.
 
@@ -34,7 +34,7 @@ There will be a list of "tracks" which will contain all the objects that are to 
      Track B |    -->->>            |     >   ----->        |---->
      Track C |          ->->>-->    |-->            --->    |
              |                      |                       |
-     Tags   Turn 1                 Turn 2                 Debug 
+     Tags   Turn 1                 Turn 2                  Debug 
 
 The timeline will store a list of tags.  The most common tag will be a 'turn tag' which represents the end of one turn and start of another.  Each animation will specify what objects it "interacts" with.  
 
@@ -68,7 +68,11 @@ Inputs that should be sent are:
 
 Networking
 ----------
-This module shall provide the ability to read incoming packet information and append it to the timeline.  Should dispatch 'new_turn' events to be sent to the current plugin.  This will also do the AMQP processing to get glogs from the arena and deal with them.
+This module shall provide the ability to read incoming packet information and append it to the timeline.  Should dispatch 'new_turn' events to be sent to the current plugin.  
+
+Arena Controller
+----------------
+The arena controller will automatically trigger events for the visualizer in lieu of user input.  This means monitoring the AMQP server for new glogs to display, displaying glogs appropriately, etc. 
 
 ED The Event Dispatcher
 -----------------------

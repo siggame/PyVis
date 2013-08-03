@@ -37,9 +37,6 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="input.html" title="3. Input"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -54,126 +51,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-renderer">
-<span id="renderer"></span><h1>2. Renderer<a class="headerlink" href="#module-renderer" title="Permalink to this headline">¶</a></h1>
-<p>The renderer is responsible for building the primitives, and complex objects to be drawn by pyglet.  This module also contains various base classes for primitives which can be modified on the fly.</p>
-<dl class="class">
-<dt id="renderer.Primitive">
-<em class="property">class </em><tt class="descclassname">renderer.</tt><tt class="descname">Primitive</tt><big>(</big><em>renderer=None</em><big>)</big><a class="reference internal" href="../_modules/renderer.html#Primitive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Primitive" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the base class for any primitive to draw to the screen. To be used most effectively, all library-provided primitives should be declared within <a class="reference internal" href="#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">renderer.Renderer</span></tt></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>renderer</strong> (<a class="reference internal" href="#renderer.Renderer" title="renderer.Renderer"><tt class="xref py py-class docutils literal"><span class="pre">renderer.Renderer</span></tt></a>) &#8211; renderer instance to add this primitive to.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">AttributeError if renderer is not passed to constructor and not instantiated from an instance of a renderer</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt id="renderer.Renderer">
-<em class="property">class </em><tt class="descclassname">renderer.</tt><tt class="descname">Renderer</tt><a class="reference internal" href="../_modules/renderer.html#Renderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class allows access to the primitives (the basic drawing building blocks) to draw just about anything.  Widgets should use these to draw themselves:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Button</span><span class="p">(</span><span class="n">RectWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="n">btn_base</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> 
-            <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
-        <span class="n">btn_text</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-        <span class="c"># etc. </span>
-        <span class="c"># etc.</span>
-</pre></div>
-</div>
-<p>primitives should be called through the Renderer instance instead of through the class (i.e.):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">renderer</span> <span class="o">=</span> <span class="n">Renderer</span><span class="p">()</span>
-<span class="n">renderer</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>instead of:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">renderer</span> <span class="o">=</span> <span class="n">Renderer</span><span class="p">()</span>
-<span class="n">Renderer</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">renderer</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>There is special python magic to make that work.  See <cite>__init__()</cite> for that.</p>
-<dl class="class">
-<dt id="renderer.Renderer.Rectangle">
-<em class="property">class </em><tt class="descname">Rectangle</tt><big>(</big><em>x</em>, <em>y</em>, <em>width</em>, <em>height</em>, <em>texture=None</em>, <em>group=None</em>, <em>color=None</em>, <em>filled=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/renderer.html#Renderer.Rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.Rectangle" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class creates a rectangle primitive.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the x offset (from the left side of the screen) to draw the rectangle.</li>
-<li><strong>y</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; is the y offset (from the bottom of the screen) to draw the rectangle.</li>
-<li><strong>width</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; is the width of the rectangle</li>
-<li><strong>height</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; is the height of the rectangle</li>
-<li><strong>texture</strong> &#8211; is the texture to paint the rectangle with</li>
-<li><strong>group</strong> (<em>Group</em>) &#8211; is the group, if any, that the rectangle should be associated with.  Using texture will automatically make this a part of the appropriate TextureGroup and make <em>group</em> its parent.</li>
-<li><strong>color</strong> (<em>3-tuple or 4-tuple of floats from 0 to 1</em>) &#8211; is the color to paint the rectangle.  If not specified, the renderer&#8217;s default <cite>fg_color</cite> will be used instead.</li>
-<li><strong>filled</strong> (<em>boolean</em>) &#8211; specified whether to draw this as a filled-in rectangle or rectangle outline.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="renderer.Renderer.draw_frame">
-<tt class="descclassname">Renderer.</tt><tt class="descname">draw_frame</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/renderer.html#Renderer.draw_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.draw_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method should be called at (or near) the end of every game loop after all the objects have been updated and are ready to draw to the screen.</p>
-<p>This will draw the batch associated with the renderer.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="renderer.Renderer.init_frame">
-<tt class="descclassname">Renderer.</tt><tt class="descname">init_frame</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/renderer.html#Renderer.init_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.init_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method should be called at the beginning of every game loop.  
-It does the pre-loop set up, if any.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="renderer.Renderer.register_with_app">
-<tt class="descclassname">Renderer.</tt><tt class="descname">register_with_app</tt><big>(</big><em>app</em><big>)</big><a class="reference internal" href="../_modules/renderer.html#Renderer.register_with_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#renderer.Renderer.register_with_app" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method automagically sets up the requests from the application.  
-It is equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">init_frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">request_update_on_draw</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">draw_frame</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> (<a class="reference internal" href="application.html#application.Application" title="application.Application"><tt class="xref py py-class docutils literal"><span class="pre">application.Application</span></tt></a>) &#8211; application to register with</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="renderer">
+<h1>2. Renderer<a class="headerlink" href="#renderer" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -216,9 +95,6 @@ It is equivalent to:</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="input.html" title="3. Input"
              >next</a> |</li>

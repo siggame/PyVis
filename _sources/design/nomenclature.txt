@@ -26,7 +26,10 @@ Misc
 .. glossary::
 
     Interaction
-        This word is mainly reserved for an object animation's dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.
+        This word, when used in the context of the timeline, is reserved for an object animation's dependence on the specific state of another object at a particular point in time.  For example, an attack animation may require another unit be at a specific (x, y) coordinate, so the other object should be frozen at that position during the duration of the attack animation.
 
     Condense(r)
-        The condenser will condense turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.
+        This is a component of the timeline. The condenser will "condense" turns into a shorter period of time while trying to preserve, as much as possible, the time allocated for an animation.  It tries its best to make normal-mode accurate and fast.
+
+    Tag
+        An element of the timeline which specifies a "special" point on timeline.  A tag can be a turn number, break point, bookmark, etc.  

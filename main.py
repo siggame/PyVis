@@ -1,7 +1,7 @@
 #!/bin/env python
 from __future__ import print_function
-from application import Application
-from renderer import Renderer
+from pyz.application import Application
+from pyz.renderer import Renderer
 from argparse import ArgumentParser
 
 # Prohibit from main import *
@@ -46,14 +46,14 @@ def main():
 
     parser = ArgumentParser(description=
         'MegaMinerAI PyVis - Python Implementation of the Visualizer')
-    parser.add_argument('glog', type=str, nargs='*', 
+    parser.add_argument('glog', type=str, nargs='*',
             help='Optional glogs to open in the visualizer.')
-    parser.add_argument('-f', dest='fullscreen', action='store_true', 
+    parser.add_argument('-f', dest='fullscreen', action='store_true',
             help='Start in fullscreen mode')
-    parser.add_argument('-a', dest='arena', metavar='server', type=str, nargs=1, 
+    parser.add_argument('-a', dest='arena', metavar='server', type=str, nargs=1,
             help='Enables arena mode querying from the given url')
-    parser.add_argument('-s', dest='spectate', 
-            metavar=('server', 'gamenumber'), nargs=2, type=str, 
+    parser.add_argument('-s', dest='spectate',
+            metavar=('server', 'gamenumber'), nargs=2, type=str,
             help='Spectates on gamenumber at server.')
 
     args = parser.parse_args()

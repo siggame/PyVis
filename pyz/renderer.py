@@ -7,8 +7,28 @@ from pyglet import clock
 from pyglet import gl
 from pyglet import graphics
 
+class Drawable(object):
+    x = property(
+        lambda self: self._x,
+        lambda self, x: self.transform(translate=(x, self._y)))
 
-class Primitive(object):
+    y = property(
+        lambda self: self._y,
+        lambda self, y: self.transform(translate=(self._x, y)))
+
+    width = property(
+        lambda self: self._width,
+        lambda self, width: self.transform(scale=(width, self._height))
+        )
+
+    height = property(
+        lambda self: self._height,
+        lambda self, width: self.transform(scale=(self._width, height))
+        )
+
+
+
+class Primitive(Drawable):
     '''
     This is the base class for any primitive to draw to the screen. To be used most effectively, all library-provided primitives should be declared within :class:`renderer.Renderer`.
 
@@ -17,8 +37,9 @@ class Primitive(object):
 
     :raises: AttributeError if renderer is not passed to constructor and not instantiated from an instance of a renderer
     '''
-    def __init__(self, renderer=None):
-        self.vertex_lists = {}
+    def __init__(self, renderer=None, offset=(0, 0)):
+        self.off_x, self.off_y = offset
+        self.vertex_list = None
         if not renderer:
             try:
                 renderer = self.renderer
@@ -31,13 +52,21 @@ class Primitive(object):
         else:
             self.renderer = renderer
 
-    x = property(
-        lambda self: self._x,
-        lambda self, x: self.move(x, self._y))
+class Composite(Drawable):
+    '''
+    This is the base class for any object that uses one or more primitives to function.
+    '''
+    def __init__(self, renderer):
+        self.primitives = []
+        self.renderer = renderer
 
-    y = property(
-        lambda self: self._y,
-        lambda self, y: self.move(self._x, y))
+    def transform(self, translate=None, scale=None, rotate=None):
+        if scale:
+            raise Exception('This needs to be overridden by the composite you'
+                'wish to scale.')
+
+        for p in self.primitives:
+            p.transform(translate=translate, rotate=rotate)
 
 class Renderer(object):
     '''
@@ -64,8 +93,8 @@ class Renderer(object):
     There is special python magic to make that work.  See `__init__()` for that.
     '''
 
-    fg_color = (1, 0, 0, 1)
-    bg_color = (0, 0, 1, 1)
+    fg_color = (1, 0.5, 0.5, 1)
+    bg_color = (1, 1, 1, 1)
     texture = None
 
     def __init__(self):
@@ -152,8 +181,8 @@ class Renderer(object):
 
             self._x = x
             self._y = y
-            self.width = self._width = width
-            self.height = self._height = height
+            self._width = width
+            self._height = height
 
             if not color:
                 color = self.renderer.fg_color
@@ -175,18 +204,18 @@ class Renderer(object):
             if filled:
                 # TODO: Change this to gl.GL_TRIANGLE_FAN when pyglet has fixed its
                 # allocator issues around TRIANGLE_FANs and LINE_LOOPs
-                mode = gl.GL_QUADS
+                mode = gl.GL_TRIANGLE_FAN
             else:
                 mode = gl.GL_LINE_LOOP
 
-            self.vertex_lists['rect'] = self.renderer.frame.add(4,
-                    gl.GL_QUADS, group, *data)
+            self.vertex_list = self.renderer.frame.add(4, mode, group,
+                *data)
 
-            self.move(x, y)
+            self.transform(translate=(x, y))
 
-        def move(self, x, y):
+        def transform(self, translate=None, scale=None, rotate=None):
             '''
-            This move method actually modifies the vertex lists to update the positions of the polygons.  This is most efficient when in unit-mode where only one unit is moving at a time.
+            This transform method actually modifies the vertex lists to update the positions of the polygons.  This is most efficient when in unit-mode where only one unit is moving at a time.
 
             This is because at this point very few objects are moving per frame. So all objects that have not moved take up zero cpu time.
 
@@ -194,17 +223,22 @@ class Renderer(object):
 
             As a final note, it may be best to move these primitives into a class built in cython so that python doesn't have to deal with all this bullshit processing.
 
-            :param x: The new x position.
-            :type x: float or int
+            :param translate: The new position.
+            :type translate: 2-tuple of float or int
 
-            :param y: The new y position.
-            :type y: float or int.
+            :param scale: The new scale.
+            :type scale: 2-tuple of float or int
             '''
-            self._x = x
-            self._y = y
-            self.vertex_lists['rect'].vertices[:] = [
+            if translate:
+                self._x, self._y = translate
+            if scale:
+                self._width, self._height = scale
+
+            x = self._x + self.off_x
+            y = self._y + self.off_y
+            self.vertex_list.vertices[:] = [
                 x, y,
-                x + self.width, y,
-                x + self.width, y + self.height,
-                x, y + self.height
+                x + self._width, y,
+                x + self._width, y + self._height,
+                x, y + self._height
             ]

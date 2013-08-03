@@ -2,6 +2,11 @@
 # (usually in the same directory as main.py) or an absolute path
 plugin directory: ./plugins
 
-# When an exception occurs, should this be reported automagically so the 
-# developers can see what you did wrong?
-report exceptions: Yes
+Error Reporting:
+    # When an exception occurs, should this be reported automagically so the 
+    # developers can see what *YOU* did wrong?
+    report exceptions: Yes
+    exception url: http://jacobvgardner.com/siggame/report/exception
+
+
+

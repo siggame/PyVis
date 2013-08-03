@@ -1,0 +1,7 @@
+# This can be a path relative to where pyz has been started 
+# (usually in the same directory as main.py) or an absolute path
+plugin directory: ./plugins
+
+# When an exception occurs, should this be reported automagically so the 
+# developers can see what you did wrong?
+report exceptions: Yes

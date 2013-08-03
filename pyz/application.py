@@ -7,7 +7,7 @@ import imp
 import os
 
 import config
-import gameloader 
+import gameloader
 import renderer
 from eventdispatcher import EventDispatcher, event_handler
 
@@ -45,7 +45,7 @@ class Application(object):
 
         #Build the renderer
         self.renderer = renderer.Renderer()
-        
+
         # Request updates
         self.request_update_on_draw(self.renderer.init_frame, 0)
         self.request_update_on_draw(self.renderer.draw_frame, 100)
@@ -55,8 +55,9 @@ class Application(object):
     def on_run_gamelog(self, data):
         print('handler')
         game_name = data['gameName'].lower()
-        path = os.path.join(config.PLUGIN_DIR, 
-                game_name, 'main.py')
+
+        path = os.path.join(config.setting['plugin directory'], game_name,
+            'main.py')
 
         self.game = imp.load_source(game_name, path)
         self.game.load(self, data)
@@ -66,7 +67,7 @@ class Application(object):
 
     def request_update_on_draw(self, procedure, order=50):
         '''
-        This method tells the application that whenever a draw occurs for the application, that *procedure* should be called.  
+        This method tells the application that whenever a draw occurs for the application, that *procedure* should be called.
 
         :param order: specifies when *procedure* should be called.  All procedures with the same *order* will execute in a semi-random fashion after the previous *order* and before the next *order* value in the update queue.  In general, all procedures should be called sometime before the :mod:`renderer`'s update() function is called.  Procedures will be called with *order* from least to greatest.
         :type order: float or integer
@@ -93,7 +94,7 @@ class Application(object):
         This function is called at the start of every loop in the 'game loop.'
 
         It calls all the procedures that requested updates in the game loop.
-        
+
         *dt* is the time since the last call.
         '''
         # Forces a redraw

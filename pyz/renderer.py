@@ -24,7 +24,12 @@ class Drawable(object):
 
     height = property(
         lambda self: self._height,
-        lambda self, width: self.transform(scale=(self._width, height))
+        lambda self, height: self.transform(scale=(self._width, height))
+        )
+
+    color = property(
+        lambda self: self._color,
+        lambda self, color: self.transform(color=color)
         )
 
 
@@ -58,7 +63,7 @@ class Composite(Drawable):
     '''
     def __init__(self, renderer):
         self.primitives = []
-        self.renderer = renderer
+        self._renderer = renderer
 
     def transform(self, translate=None, scale=None, rotate=None):
         if scale:
@@ -146,8 +151,7 @@ class Renderer(object):
 
     class Arc(Primitive):
         '''
-        This class creates an arc primitive for which circles and pies can be created.
-
+        This class creates an arc primitive for which circles and pies (yum!) can be created.
 
         :param x: The x offset (from the left side of the screen) to the arc center
         :type x: float
@@ -161,9 +165,21 @@ class Renderer(object):
         :param points: The number of vertices to make up the arc
         :type points: int
 
+        :param start: The starting position of the pie in degrees
+        :type start: float
+
+        :param end: The ending position of the pie in degrees
+        :type end: float
+
+        :param filled: The arc appears as a pie because it will be filled with color
+        :type filled: bool
+
+        :param loop: If not filled, this will set whether the first and last points join at the middle or just an arc is created.
+        :type loop: bool
+
         '''
 
-        def __init__(self, x, y, radius, points=40, texture=None, group=None, color=None,
+        def __init__(self, x, y, radius, points=20, texture=None, group=None, color=None,
             filled=True, loop=True, start=0, end=360, **kwargs):
             super(Renderer.Arc, self).__init__(**kwargs)
 
@@ -182,8 +198,9 @@ class Renderer(object):
                 ('c4f', (color) * points)
             ]
 
-            '''
             if texture:
+                raise Exception('Not Yet Implemented')
+            '''
                 data += [
                     ('t2f',
                         (0, 0,
@@ -229,6 +246,10 @@ class Renderer(object):
             This may not be as efficient when applied to normal, condensed, or liquid mode because far more polygons will be moving at the same time.  It may be better to draw each vertex list separately after having gone through a matrix transformation.
 
             As a final note, it may be best to move these primitives into a class built in cython so that python doesn't have to deal with all this bullshit processing.
+
+            As an addendum to my final note, it may be sufficient to move this processing to another python process (see multiprocessing), instead of using cython.
+
+            Or just use both.
 
             :param translate: The new position.
             :type translate: 2-tuple of float or int
@@ -317,7 +338,7 @@ class Renderer(object):
         :type color: 3-tuple or 4-tuple of floats from 0 to 1
 
         :param filled: specified whether to draw this as a filled-in rectangle or rectangle outline.
-        :type filled: boolean
+        :type filled: bool
         '''
         def __init__(self, x, y, width, height, texture=None,
                 group=None, color=None, filled=True, **kwargs):
@@ -329,11 +350,13 @@ class Renderer(object):
             self._width, self._height = width, height
 
             if not color:
-                color = self.renderer.fg_color
+                self._color = self.renderer.fg_color
+            else:
+                self._color = color
 
             data = [
                 ('v2f', (0,) * 8),
-                ('c4f', (color) * 4)
+                ('c4f', (self._color) * 4)
             ]
 
             if texture:
@@ -360,7 +383,7 @@ class Renderer(object):
 
             self.transform()
 
-        def transform(self, translate=None, scale=None, rotate=None):
+        def transform(self, translate=None, scale=None, rotate=None, color=None):
             '''
             This transform method actually modifies the vertex lists to update the positions of the polygons.  This is most efficient when in unit-mode where only one unit is moving at a time.
 
@@ -376,6 +399,11 @@ class Renderer(object):
             :param scale: The new scale.
             :type scale: 2-tuple of float or int
             '''
+
+            if color and color != self._color:
+                self._color = color
+                self.vertex_list.colors[:] = (color) * 4
+
             if translate:
                 self._x, self._y = translate
             if scale:

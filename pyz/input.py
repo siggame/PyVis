@@ -60,6 +60,7 @@ class Input(object):
         pass
 
     def on_mouse_move(self, x, y, dx, dy):
+        print x, y
         pass
 
     def on_mouse_enter(self, x, y):

@@ -30,9 +30,3 @@ class ProgressBar(renderer.Composite):
         lambda self: self._progress,
         lambda self, progress: self.update_progress(progress)
         )
-
-
-
-
-
-

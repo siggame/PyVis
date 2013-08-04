@@ -49,6 +49,10 @@ class Input(object):
         def on_text(text):
             self.on_text(text)
 
+        @win.event
+        def on_text_motion(motion):
+            self.on_text_motion(motion)
+
 
     def on_key_press(self, symbol, modifiers):
         '''
@@ -79,4 +83,7 @@ class Input(object):
         pass
 
     def on_text(self, text):
+        pass
+
+    def on_text_motion(self, motion):
         pass

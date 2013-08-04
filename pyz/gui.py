@@ -5,6 +5,24 @@ The GUI (Graphical User Interface) is responsible for creating/showing buttons/s
 import renderer
 import pyglet
 from input import Input
+from pyglet.window import key
+
+MOTIONS = {
+    key.MOTION_UP: 'up',
+    key.MOTION_DOWN: 'down',
+    key.MOTION_LEFT: 'left',
+    key.MOTION_RIGHT: 'right',
+    key.MOTION_PREVIOUS_WORD: 'prev',
+    key.MOTION_NEXT_WORD: 'next',
+    key.MOTION_BEGINNING_OF_LINE: 'start',
+    key.MOTION_END_OF_LINE: 'end',
+    key.MOTION_PREVIOUS_PAGE: 'prev_page',
+    key.MOTION_NEXT_PAGE: 'next_page',
+    key.MOTION_BEGINNING_OF_FILE: 'bof',
+    key.MOTION_END_OF_FILE: 'eof',
+    key.MOTION_BACKSPACE: 'backspace',
+    key.MOTION_DELETE: 'delete'
+}
 
 class Event(object):
     def __init__(self, name, **params):
@@ -64,6 +82,14 @@ class GUI(Input):
     def on_mouse_move(self, x, y, dx, dy):
         evt = Event('mouse_move', x=x, y=y, dx=dx, dy=dy)
         self.handle_event(evt)
+
+    def on_text(self, text):
+        print text
+
+    def on_text_motion(self, motion):
+
+
+        print MOTIONS[motion]
 
     def handle_event(self, event):
         for child in self._children:
@@ -135,7 +161,6 @@ class GUI(Input):
 
             self._color = self.up_color
 
-
             self.outline = renderer.Rectangle(0, 0, width, height,
                 filled=False, color=renderer.bg_color, offset=(x, y))
 
@@ -143,7 +168,7 @@ class GUI(Input):
                 filled=True, color=self.up_color, offset=(x, y))
 
             x = x + width / 2
-            y = y + height / 2
+            y = y + height / 2 + 1
 
             self.text = pyglet.text.Label(text, x=x, y=y, bold=True,
                 anchor_x='center', anchor_y='center', batch=renderer.frame)
@@ -151,6 +176,9 @@ class GUI(Input):
             self._state = 'up'
             self._hover = False
             self._active = False
+
+        def response(self):
+            print 'Not Connected To Anything'
 
         def handle_event(self, event):
             if self._state == 'up' and event.type == 'mouse_press':
@@ -161,6 +189,8 @@ class GUI(Input):
                 self._state = 'up'
                 if self.mouse_in_area(event):
                     self.push_area.color = self.hover_color
+                    self.response()
+
                 else:
                     self.push_area.color = self.up_color
             elif event.type == 'mouse_move':
@@ -177,7 +207,7 @@ class GUI(Input):
             if color and color != self._color:
                 self._color = color
 
-
-
-
+    class Input(InputComposite):
+        def __init__(self, x, y, width):
+            pass
 

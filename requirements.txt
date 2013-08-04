@@ -3,3 +3,4 @@ mock
 coverage
 pika
 pyyaml
+pyglet
